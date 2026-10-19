@@ -18,6 +18,11 @@ Una fase por día. Cada fase marcada `[x]` ya está publicada. La siguiente a im
   - En cada sesión del registro: número de pausas y su duración total.
   - En el gráfico de 7 días: opción de mostrar los descansos apilados en un tono neutro encima de la barra de estudio.
   - Durante una pausa, mostrar en el bloque del cronómetro el descanso acumulado de la sesión.
+- **Incluye también (pedido el 19 oct): gráficas mensual y cuatrimestral en el Registro de horas.**
+  - Selector de vista en el panel de la gráfica: "7 días" (la actual) · "Mes" · "Cuatrimestre".
+  - Mes: una barra por día del mes, apilada por asignatura (horas efectivas), con flechas para mes anterior y siguiente. Debajo, el total del mes, la media por día estudiado y el reparto por asignatura.
+  - Cuatrimestre: una barra por semana (lunes a domingo) apilada por asignatura, con el total del cuatrimestre y la media semanal comparada con el objetivo semanal (línea de referencia). Fechas editables en la app, por defecto 1.er cuatrimestre del 1 sep al 31 ene y 2.º del 1 feb al 30 jun; por defecto, el que contiene la fecha de hoy. Se guardan en `config` (por ejemplo `config.terms`, campo nuevo y opcional, sin cambiar los existentes).
+  - Las tres vistas usan la misma escala vertical rotulada en horas, con etiquetas que no se solapan a 400 px (en Mes, etiquetar solo cada 5 días y el día de hoy).
 - Vista de calendario mensual (lunes primero) y vista del día seleccionado; por defecto, hoy.
 - Eventos con: título, fecha, hora de inicio y fin (opcional, "todo el día"), tipo (Clase, Examen, Entrega, Tarea, Otro), asignatura opcional (de las asignaturas del registro de horas), notas y recordatorio opcional (al momento, 10 min, 1 h, 1 día antes).
 - Repetición semanal opcional (para clases), con fecha de fin opcional.
