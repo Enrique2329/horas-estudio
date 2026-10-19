@@ -1,0 +1,17 @@
+{
+  "name": "Horas de Estudio",
+  "short_name": "Estudio",
+  "description": "Cronómetro de estudio por asignatura con pausas, resumen de cada sesión y dudas pendientes.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EFE3D3",
+  "theme_color": "#3E4224",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
