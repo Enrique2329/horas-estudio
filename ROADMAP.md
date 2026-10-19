@@ -27,13 +27,16 @@ Una fase por día. Cada fase marcada `[x]` ya está publicada. La siguiente a im
 
 ### Fase 3 — Recursos por asignatura
 - Una ficha por asignatura (las del registro de horas).
+- Además de los recursos guardados en el móvil, la ficha lista los archivos del repositorio en `recursos/<Nombre de asignatura>/` (leídos de `recursos/indice.json`, que mantiene la tarea diaria) con enlace para abrirlos. Explicar en la página, en una línea, que para que se generen flashcards el recurso tiene que subirse a esa carpeta de GitHub, y enlazar a https://github.com/Enrique2329/horas-estudio/tree/main/recursos.
 - Recursos: enlace (URL), nota de texto, o archivo (PDF/imagen) guardado en IndexedDB con aviso de espacio ocupado.
 - Etiquetas (Apuntes, Boletín, Examen anterior, Vídeo, Otro), búsqueda y filtro.
 - Abrir enlaces en pestaña nueva; los archivos se abren desde un blob URL.
 
 ### Fase 4 — Flashcards
 - Mazos por asignatura; tarjetas con anverso y reverso (texto, admitir saltos de línea).
-- Crear, editar y borrar tarjetas en la app; importar tarjetas desde JSON (formato `{"cards":[{"subject":"<id o nombre>","front":"…","back":"…"}]}`) para que Claude las genere desde los apuntes.
+- Las tarjetas generadas por Claude están en `flashcards.json` del repositorio (formato abajo). La app lo descarga al abrirse (con red; si no, usa la última copia) y lo fusiona por `id` con las tarjetas propias. El progreso (caja Leitner, aciertos) se guarda en localStorage por `id`, nunca dentro de flashcards.json.
+- La asignatura se asocia por nombre (sin distinguir mayúsculas ni tildes) con las del registro de horas; si no existe, se muestra con su nombre igualmente.
+- Crear, editar y borrar tarjetas propias en la app (las de Claude solo se pueden ocultar).
 - Modo juego: mezcla tarjetas de todas las asignaturas (o las elegidas), repetición espaciada sencilla (Leitner, 5 cajas), botones "La sabía" / "No la sabía", racha, puntos y sesión corta de 10 tarjetas para ratos muertos.
 - Estadísticas: tarjetas dominadas por asignatura.
 
@@ -44,3 +47,10 @@ Una fase por día. Cada fase marcada `[x]` ya está publicada. La siguiente a im
 - Reutilizar los tokens de color y tipografía existentes (`:root`), los componentes `.panel`, `.btn`, `.chip`, y respetar modo claro y oscuro.
 - Interfaz en español. Diseño pensado primero para móvil (400 px).
 - En cada publicación, subir la versión de caché de `sw.js` (`horas-estudio-vN`).
+
+## Generación automática de flashcards (cada ejecución diaria, independiente de las fases)
+- Enrique sube sus recursos (PDF, imágenes, .md, .txt, .docx) a `recursos/<Nombre de asignatura>/` desde GitHub.
+- `flashcards.json` tiene la forma `{"version":1,"updated":"<fecha ISO>","sources":{"<ruta del archivo>":"<sha del blob>"},"cards":[{"id":"<estable>","subject":"<Nombre de asignatura>","source":"<ruta>","front":"…","back":"…","tags":["…"]}]}`.
+- Cada día: para cada archivo de `recursos/` cuyo sha no coincida con `sources`, leerlo y generar entre 10 y 40 tarjetas según su extensión: preguntas concretas, una idea por tarjeta, respuestas cortas, con fórmulas en texto legible (Unicode o notación lineal). Si un archivo cambió, sustituir sus tarjetas. Si se borró, quitar sus tarjetas. Ids estables: `<slug de la ruta>-<n>`.
+- Regenerar `recursos/indice.json` con la lista de archivos por asignatura (`{"<Asignatura>":[{"path":"…","name":"…","size":n}]}`).
+- Si no hay cambios en `recursos/`, no tocar estos archivos.
