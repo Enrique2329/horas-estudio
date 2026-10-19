@@ -18,6 +18,13 @@ Una fase por día. Cada fase marcada `[x]` ya está publicada. La siguiente a im
   - En cada sesión del registro: número de pausas y su duración total.
   - En el gráfico de 7 días: opción de mostrar los descansos apilados en un tono neutro encima de la barra de estudio.
   - Durante una pausa, mostrar en el bloque del cronómetro el descanso acumulado de la sesión.
+- **Incluye también (pedido el 19 oct): porcentaje de aprovechamiento por sesión, por asignatura y por cuatrimestre.**
+  - Definición: tiempo real de sesión = fin − inicio (incluye descansos); tiempo efectivo = tiempo real − descansos (`paused`). Aprovechamiento = efectivo / real × 100, redondeado a entero.
+  - Los agregados se calculan sumando tiempos (Σ efectivo / Σ real), nunca promediando porcentajes, para que una sesión de 15 min no pese lo mismo que una de 3 h.
+  - Por sesión: mostrar el % en cada entrada del registro (junto a pausas y su duración) y en el bloque del cronómetro al cerrar la sesión (antes de guardar el resumen), y en directo durante la sesión.
+  - Por asignatura en el cuatrimestre: en la vista "Cuatrimestre" de la gráfica, una tabla con una fila por asignatura: tiempo real, descansos, efectivo, aprovechamiento % (con barra) y nº de sesiones. Debajo, una fila "Global" con el aprovechamiento real de todas las sesiones del cuatrimestre. Usa el mismo cuatrimestre seleccionado en la vista (fechas de `config.terms`).
+  - Sesiones añadidas a mano: no tienen datos reales de descansos, así que no cuentan para el aprovechamiento (sí para las horas). A partir de ahora, guardarlas con `manual:true` y añadir al formulario manual un campo opcional "Descansos (min)": si se rellena, la sesión guarda `paused` y sí cuenta. Las sesiones antiguas sin campo `paused` se tratan como manuales. Indicar en la tabla cuántas sesiones quedan fuera del cálculo, si hay alguna.
+  - Colores del %: neutro por defecto; sin juicios de valor en el texto.
 - **Incluye también (pedido el 19 oct): gráficas mensual y cuatrimestral en el Registro de horas.**
   - Selector de vista en el panel de la gráfica: "7 días" (la actual) · "Mes" · "Cuatrimestre".
   - Mes: una barra por día del mes, apilada por asignatura (horas efectivas), con flechas para mes anterior y siguiente. Debajo, el total del mes, la media por día estudiado y el reparto por asignatura.
