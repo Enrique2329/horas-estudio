@@ -11,6 +11,13 @@ Una fase por día. Cada fase marcada `[x]` ya está publicada. La siguiente a im
 ## Especificación de cada fase
 
 ### Fase 1 — Agenda y recordatorios
+- **Incluye también esta mejora del Registro de horas (pedida el 19 oct): descansos y horas efectivas.**
+  - Las pausas ya se guardan por sesión en el campo `paused` (ms). Añadir el número de pausas: `active.pauseCount` (se incrementa en cada Pausar) y `pauses` (número) en la sesión guardada. Las sesiones antiguas sin `pauses` cuentan como 0 pausas conocidas.
+  - En el Resumen, para Hoy y Esta semana: tiempo total de sesión (de inicio a fin), descansos, horas efectivas (sin pausas) y porcentaje de efectividad (efectivas / total). Las horas efectivas son las que ya cuentan para objetivos y estadísticas, así que no cambies esos cálculos.
+  - En la cabecera de cada día del registro: "efectivo Xh · descansos Ym".
+  - En cada sesión del registro: número de pausas y su duración total.
+  - En el gráfico de 7 días: opción de mostrar los descansos apilados en un tono neutro encima de la barra de estudio.
+  - Durante una pausa, mostrar en el bloque del cronómetro el descanso acumulado de la sesión.
 - Vista de calendario mensual (lunes primero) y vista del día seleccionado; por defecto, hoy.
 - Eventos con: título, fecha, hora de inicio y fin (opcional, "todo el día"), tipo (Clase, Examen, Entrega, Tarea, Otro), asignatura opcional (de las asignaturas del registro de horas), notas y recordatorio opcional (al momento, 10 min, 1 h, 1 día antes).
 - Repetición semanal opcional (para clases), con fecha de fin opcional.
