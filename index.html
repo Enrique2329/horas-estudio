@@ -56,7 +56,25 @@ body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-siz
 .wrap{max-width:1040px;margin:0 auto;padding-block:24px 48px;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
   display:grid;gap:20px}
-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.nav{position:relative}
+.menubtn{display:inline-flex;align-items:center;gap:12px;background:none;border:0;color:var(--ink);cursor:pointer;padding:6px 0;
+  font-family:var(--f-display);font-weight:700;font-size:1.6rem;letter-spacing:-.01em;text-align:left}
+.burger{width:22px;height:2px;background:var(--ink);position:relative;flex:none;border-radius:2px}
+.burger::before,.burger::after{content:"";position:absolute;left:0;width:22px;height:2px;background:var(--ink);border-radius:2px}
+.burger::before{top:-7px}.burger::after{top:7px}
+.caret{font-size:.9rem;color:var(--muted)}
+.menubtn:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px}
+.menu{position:absolute;top:calc(100% + 6px);left:0;z-index:20;min-width:260px;max-width:calc(100vw - 32px);background:var(--card);
+  border:1px solid var(--line);border-radius:10px;padding:6px;display:grid;box-shadow:0 10px 30px rgba(46,31,22,.18)}
+.menu a{display:flex;justify-content:space-between;gap:12px;padding:11px 12px;border-radius:7px;color:var(--ink);text-decoration:none;font-weight:500}
+.menu a:hover,.menu a:focus-visible{background:var(--paper);outline:none}
+.menu a[aria-current="page"]{background:var(--hero);color:var(--hero-ink)}
+.menu a .tag{font-size:.72rem;color:var(--muted);font-weight:400;align-self:center}
+.menu a[aria-current="page"] .tag{color:var(--hero-muted)}
+.soon{max-width:560px}
+.soon p{margin:0;color:var(--muted)}
+.soon .btn{justify-self:start;text-decoration:none}
 h1{font-family:var(--f-display);font-weight:700;font-size:1.75rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
 h2{font-family:var(--f-body);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0}
 .stat b{color:var(--accent)}
@@ -208,11 +226,28 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 <div class="wrap">
   <header>
-    <h1>Horas de estudio</h1>
+    <div class="nav">
+      <button class="menubtn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="burger" aria-hidden="true"></span><span id="pageTitle">Registro de horas</span><span class="caret" aria-hidden="true">▾</span>
+      </button>
+      <nav class="menu" id="menu" hidden aria-label="Secciones">
+        <a href="#registro" data-page="registro">Registro de horas</a>
+        <a href="#agenda" data-page="agenda">Agenda y recordatorios</a>
+        <a href="#horario" data-page="horario">Horario semanal</a>
+        <a href="#recursos" data-page="recursos">Recursos por asignatura</a>
+        <a href="#flashcards" data-page="flashcards">Flashcards</a>
+      </nav>
+    </div>
     <span class="sync" id="sync">Cargando…</span>
   </header>
 
-  <div class="grid">
+  <section class="soon panel" id="soon" hidden>
+    <h2 id="soonTitle"></h2>
+    <p id="soonText"></p>
+    <a class="btn primary" href="#registro">Volver al registro de horas</a>
+  </section>
+
+  <div class="grid" id="page-registro">
     <div class="col">
       <section class="panel timer" id="timerPanel" aria-label="Cronómetro">
         <h2>Asignatura</h2>
@@ -716,6 +751,32 @@ $("importFile").addEventListener("change",async e=>{
 });
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
+
+/* ---------- menú de secciones ---------- */
+const PAGES={
+  registro:{t:"Registro de horas",ready:true},
+  agenda:{t:"Agenda y recordatorios",soon:"Agenda del día con tus tareas, exámenes y recordatorios, organizada por fecha como un calendario."},
+  horario:{t:"Horario semanal",soon:"Tu horario de la semana (clases y bloques de estudio), cruzado con los eventos de la agenda."},
+  recursos:{t:"Recursos por asignatura",soon:"Un sitio por asignatura para guardar apuntes, enlaces, PDFs y boletines."},
+  flashcards:{t:"Flashcards",soon:"Tarjetas de repaso que mezclan todas las asignaturas, en modo juego, para los ratos muertos."}
+};
+document.querySelectorAll("#menu a").forEach(a=>{if(!PAGES[a.dataset.page].ready){const t=document.createElement("span");t.className="tag";t.textContent="Próximamente";a.append(t);}});
+function openMenu(o){$("menu").hidden=!o;$("menuBtn").setAttribute("aria-expanded",String(o));if(o)$("menu").querySelector('[aria-current="page"]')?.focus();}
+$("menuBtn").addEventListener("click",()=>openMenu($("menu").hidden));
+document.addEventListener("click",e=>{if(!$("menu").hidden&&!e.target.closest(".nav"))openMenu(false);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("menu").hidden){openMenu(false);$("menuBtn").focus();}});
+function route(){
+  const id=(location.hash||"#registro").slice(1);const pg=PAGES[id]?id:"registro";const info=PAGES[pg];
+  $("pageTitle").textContent=info.t;
+  document.querySelectorAll("#menu a").forEach(a=>{if(a.dataset.page===pg)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});
+  $("page-registro").hidden=!info.ready;
+  $("soon").hidden=!!info.ready;
+  if(!info.ready){$("soonTitle").textContent=info.t+" · próximamente";$("soonText").textContent=info.soon;}
+  document.title=info.ready?document.title:info.t;
+  openMenu(false);window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+route();
 
 render();
 init();
