@@ -155,7 +155,8 @@ input,select{font:inherit;color:var(--ink);background:var(--paper);border:1px so
 
 /* Registro */
 .log{display:grid;gap:0;max-height:440px;overflow:auto}
-.dayhead{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:12px 0 4px;display:flex;justify-content:space-between;border-bottom:1px solid var(--line)}
+.dayhead{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:12px 0 4px;display:flex;flex-wrap:wrap;gap:2px 10px;justify-content:space-between;border-bottom:1px solid var(--line)}
+.dayhead span:last-child{text-transform:none;letter-spacing:0}
 .dayhead span:last-child{font-family:var(--f-mono)}
 .entry{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem}
 .entry i{width:10px;height:10px;border-radius:50%}
@@ -222,6 +223,132 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .entry .txt b{color:var(--ink);font-weight:600}
 .entry{align-items:start}
 .entry i{margin-top:6px}
+
+/* Utilidades */
+.btn.sm{padding:6px 10px;font-size:.85rem}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.manual label.chk,.chk{display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--ink);cursor:pointer}
+.chk input{width:16px;height:16px;accent-color:var(--accent);margin:0}
+
+/* Resumen: descansos y aprovechamiento */
+.eff{display:grid;grid-template-columns:minmax(0,3.8em) repeat(4,minmax(0,1fr));gap:4px 8px;font-size:.82rem;align-items:baseline;border-top:1px solid var(--line);padding-top:12px}
+.eff .h{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:0}
+.eff .h.r,.eff .v{text-align:right}
+.eff .l{color:var(--muted)}
+.eff .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.eff .v.p{font-weight:600}
+.timer .live{font-family:var(--f-mono);font-size:.85rem;color:var(--hero-muted)}
+
+/* Gráfica: selector de vista y barras */
+.chhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink);padding:7px 12px;cursor:pointer;font-size:.85rem}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--hero);color:var(--hero-ink);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tog{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted);cursor:pointer}
+.tog input{accent-color:var(--accent);margin:0}
+.chnav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chnav span{font-weight:600;text-align:center;font-size:.92rem}
+.chnav small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+.bc{display:grid;grid-template-columns:34px minmax(0,1fr);grid-template-rows:160px auto;column-gap:6px;padding-top:16px}
+.bc-y{position:relative}
+.bc-y span{position:absolute;right:0;transform:translateY(50%);font-family:var(--f-mono);font-size:.66rem;color:var(--muted);white-space:nowrap}
+.bc-plot{position:relative;border-bottom:1px solid var(--line)}
+.bc-grid{position:absolute;left:0;right:0;border-top:1px dashed var(--line)}
+.bc-bars{position:absolute;inset:0;display:flex;align-items:flex-end}
+.bc-col{flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.bc-v{font-family:var(--f-mono);font-size:.66rem;color:var(--muted);white-space:nowrap;padding-bottom:2px}
+.bc-stack{width:100%;max-width:38px;display:flex;flex-direction:column-reverse;border-radius:3px 3px 0 0;overflow:hidden}
+.bc-stack span{display:block;width:100%}
+.bc-stack .brk,.sw-brk{background:repeating-linear-gradient(135deg,var(--muted) 0 2px,transparent 2px 5px);opacity:.55}
+.sw-brk{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-2px;margin-right:4px}
+.bc-ref{position:absolute;left:0;right:0;border-top:2px dashed var(--run);pointer-events:none}
+.bc-ref span{position:absolute;right:0;bottom:2px;font-size:.68rem;color:var(--run);background:var(--card);padding:0 4px;border-radius:4px}
+.bc-x{display:flex;padding-top:6px}
+.bc-x div{flex:1 1 0;min-width:0;display:flex;justify-content:center;font-size:.7rem;color:var(--muted);white-space:nowrap}
+.bc-x div.today{color:var(--ink);font-weight:600}
+.extra{display:grid;gap:16px}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kpis div{display:grid;gap:1px;min-width:0}
+.kpis b{font-family:var(--f-mono);font-size:1.1rem;font-variant-numeric:tabular-nums;font-weight:600}
+.kpis span{font-size:.75rem;color:var(--muted)}
+.terms summary{cursor:pointer;font-size:.85rem;color:var(--accent);font-weight:500}
+.terms .manual{margin-top:10px}
+
+/* Aprovechamiento */
+.aprov{display:grid;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+.arow{display:grid;gap:5px}
+.arow .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.arow .n{display:flex;align-items:center;gap:8px;font-weight:500;min-width:0}
+.arow .n i{width:10px;height:10px;border-radius:50%;flex:none}
+.arow .p{font-family:var(--f-mono);font-weight:600;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.arow .m{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.arow.global{border-top:1px solid var(--line);padding-top:12px}
+.arow.global .n{font-weight:700}
+.arow.global .p{font-size:1.3rem}
+
+/* Avisos */
+.alerts{display:grid;gap:8px}
+.alert{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--run);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.alert b{display:block}
+
+/* Agenda */
+.calhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.calhead h2{flex:1;text-align:center;font-size:.85rem;min-width:8em}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .wd{text-align:center;font-size:.72rem;color:var(--muted);font-weight:600}
+.cal button{border:1px solid transparent;background:var(--paper);color:var(--ink);border-radius:8px;min-height:46px;padding:4px 2px;display:grid;grid-template-rows:auto 1fr;justify-items:center;gap:3px;cursor:pointer;font:inherit;font-size:.85rem}
+.cal button.out{opacity:.45}
+.cal button.today{border-color:var(--accent);font-weight:700}
+.cal button[aria-pressed="true"]{background:var(--hero);color:var(--hero-ink)}
+.cal button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cal .dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center}
+.cal .dots i{width:6px;height:6px;border-radius:50%}
+.dayhd{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.ev{display:grid;grid-template-columns:4px minmax(0,1fr) auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start}
+.ev .bar4{width:4px;align-self:stretch;border-radius:2px}
+.ev .t{font-weight:600;overflow-wrap:anywhere}
+.ev .m{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.ev.done .t{text-decoration:line-through;color:var(--muted)}
+.ev .side{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.badge{display:inline-block;font-size:.7rem;border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-right:6px;color:var(--ink)}
+.uprow{display:grid;grid-template-columns:4.6em minmax(0,1fr);gap:10px;align-items:center;padding:9px 0;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;width:100%}
+.uprow .cd{font-family:var(--f-mono);font-weight:600;font-size:.9rem}
+.uprow .cd.soon{color:var(--run)}
+.uprow .m{font-size:.78rem;color:var(--muted)}
+
+/* Horario */
+.hzstrip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.hzstrip button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:5px 0;font:inherit;font-size:.75rem;cursor:pointer;display:grid}
+.hzstrip button b{font-size:.9rem}
+.hzstrip button.today{border-color:var(--accent)}
+.hzstrip button[aria-pressed="true"]{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+.hzrow{display:grid;column-gap:4px}
+.hzh{font-size:.75rem;text-align:center;color:var(--muted);padding-bottom:4px}
+.hzh.today{color:var(--ink);font-weight:700}
+.hzlbl{font-size:.66rem;color:var(--muted);text-align:right;padding-top:3px}
+.hzadc{display:grid;gap:2px;align-content:start;padding-bottom:4px;min-width:0}
+.hzbody{padding-top:8px}
+.hzt{position:relative}
+.hzt span{position:absolute;right:2px;transform:translateY(-50%);font-family:var(--f-mono);font-size:.66rem;color:var(--muted)}
+.hzc{position:relative;border-left:1px solid var(--line);cursor:copy;min-width:0;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(var(--grid) 1px,transparent 1px);background-size:100% 44px,100% 22px}
+.hzc.today{background-color:var(--paper)}
+.hzfree{position:absolute;left:2px;right:2px;border-radius:6px;pointer-events:none;border:1px dashed var(--line);
+  background:repeating-linear-gradient(135deg,transparent 0 7px,var(--grid) 7px 9px);font-size:.64rem;color:var(--muted);padding:2px 4px;overflow:hidden}
+.hzi{position:absolute;border-radius:6px;padding:2px 5px;font-size:.72rem;line-height:1.25;overflow:hidden;cursor:pointer;
+  background:var(--card);color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--muted);z-index:1;text-align:left;font-family:inherit}
+.hzi b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hzi span{display:block;color:var(--muted);font-family:var(--f-mono);font-size:.64rem;white-space:nowrap}
+.hzi.blk{border-style:dashed;border-left-style:solid}
+.hzi .go{margin-top:3px;font-size:.68rem;padding:1px 7px;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer;font-family:inherit}
+.hzi:focus-visible,.hzstrip button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.hzchip{font-size:.68rem;border-radius:4px;padding:1px 4px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;color:var(--ink);font-family:inherit;text-align:left}
+.hznow{position:absolute;left:0;right:0;height:2px;background:var(--run);pointer-events:none;z-index:2}
+.hznow::before{content:"";position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--run)}
+.detail{display:grid;gap:10px}
+.detail .t{font-family:var(--f-display);font-weight:700;font-size:1.15rem}
 </style>
 
 <div class="wrap">
@@ -240,6 +367,7 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     </div>
     <span class="sync" id="sync">Cargando…</span>
   </header>
+  <section class="alerts" id="alerts" hidden aria-live="polite" aria-label="Recordatorios"></section>
 
   <section class="soon panel" id="soon" hidden>
     <h2 id="soonTitle"></h2>
@@ -259,6 +387,7 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
         </div>
         <div class="clock" id="clock" aria-live="off">00:00:00</div>
         <div class="status"><span class="dot"></span><span id="status">Parado</span></div>
+        <div class="live" id="live" hidden></div>
         <div class="actions" id="actions">
           <button class="btn primary" id="pause" hidden>Pausar</button>
           <button class="btn primary" id="toggle">Empezar</button>
@@ -281,12 +410,20 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
         <p class="note" id="timerNote">El cronómetro sigue contando aunque cierres la página. Usa Pausar para los descansos: no cuentan como estudio y no piden resumen. Al terminar la sesión te pediremos el resumen.</p>
       </section>
 
-      <section class="panel" aria-label="Últimos 7 días">
-        <h2>Últimos 7 días</h2>
-        <div>
-          <div class="chart" id="chart"></div>
-          <div class="labels" id="chartLabels"></div>
+      <section class="panel" aria-label="Gráfica de horas">
+        <div class="chhead">
+          <div class="seg" id="viewSeg" role="group" aria-label="Periodo de la gráfica">
+            <button type="button" data-v="7">7 días</button><button type="button" data-v="mes">Mes</button><button type="button" data-v="cuat">Cuatrimestre</button>
+          </div>
+          <label class="tog"><input type="checkbox" id="showBrk"> Descansos</label>
         </div>
+        <div class="chnav" id="chNav" hidden>
+          <button class="btn ghost sm" type="button" id="chPrev" aria-label="Anterior">‹</button>
+          <span id="chTitle"></span>
+          <button class="btn ghost sm" type="button" id="chNext" aria-label="Siguiente">›</button>
+        </div>
+        <div id="chartBox"></div>
+        <div class="extra" id="chExtra"></div>
       </section>
 
       <section class="panel" aria-label="Añadir sesión a mano">
@@ -295,7 +432,8 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
           <label>Asignatura<select id="mSubj"></select></label>
           <label>Día<input type="date" id="mDate" required></label>
           <label>Inicio<input type="time" id="mTime" value="17:00" required></label>
-          <label>Minutos<input type="number" id="mMin" min="1" max="720" value="60" required></label>
+          <label>Minutos de estudio<input type="number" id="mMin" min="1" max="720" value="60" required></label>
+          <label>Descansos (min)<input type="number" id="mBrk" min="0" max="600" placeholder="opcional"></label>
           <label class="wide">Qué estudiaste y cómo fue<textarea id="mNotes" rows="2" required></textarea></label>
           <label class="wide">Dudas (una por línea)<textarea id="mDoubts" rows="2"></textarea></label>
           <button class="btn" type="submit">Guardar</button>
@@ -310,6 +448,7 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
           <div class="stat"><b id="stWeek">0h 00</b><span>Esta semana</span></div>
           <div class="stat"><b id="stTotal">0h 00</b><span>Total</span></div>
         </div>
+        <div class="eff" id="effBox" aria-label="Descansos y aprovechamiento"></div>
         <div class="goal">
           <div class="goalrow"><span id="goalTxt">Objetivo semanal</span>
             <label>Objetivo <input type="number" id="goal" min="1" max="100" value="20"> h</label></div>
@@ -350,6 +489,100 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
       </section>
     </div>
   </div>
+
+  <!-- ===== Agenda y recordatorios ===== -->
+  <div class="grid" id="page-agenda" hidden>
+    <div class="col">
+      <section class="panel" aria-label="Calendario">
+        <div class="calhead">
+          <button class="btn ghost sm" type="button" id="calPrev" aria-label="Mes anterior">‹</button>
+          <h2 id="calTitle"></h2>
+          <button class="btn ghost sm" type="button" id="calNext" aria-label="Mes siguiente">›</button>
+          <button class="btn ghost sm" type="button" id="calToday">Hoy</button>
+        </div>
+        <div class="cal" id="cal"></div>
+      </section>
+      <section class="panel" aria-label="Día seleccionado">
+        <div class="dayhd"><h2 id="dayTitle"></h2><button class="btn primary sm" type="button" id="evAdd">+ Evento</button></div>
+        <div id="dayList"></div>
+      </section>
+      <section class="panel" id="evFormPanel" hidden aria-label="Evento">
+        <form class="manual" id="evForm" novalidate>
+          <div class="fbhead wide" id="evFormTitle">Nuevo evento</div>
+          <label class="wide">Título<input id="eTitle" maxlength="80" placeholder="Ej.: Examen parcial tema 1-3"></label>
+          <label>Fecha<input type="date" id="eDate"></label>
+          <label>Tipo<select id="eType"><option>Clase</option><option>Examen</option><option>Entrega</option><option>Tarea</option><option>Otro</option></select></label>
+          <label class="wide chk"><input type="checkbox" id="eAllDay"> Todo el día</label>
+          <label id="eStartLbl">Inicio<input type="time" id="eStart" value="09:00"></label>
+          <label id="eEndLbl">Fin (opcional)<input type="time" id="eEnd" value="10:00"></label>
+          <label>Asignatura<select id="eSubj"></select></label>
+          <label>Recordatorio<select id="eRemind"><option value="">Sin aviso</option><option value="0">Al momento</option><option value="10">10 min antes</option><option value="60">1 h antes</option><option value="1440">1 día antes</option></select></label>
+          <label class="wide chk"><input type="checkbox" id="eRepeat"> Repetir cada semana</label>
+          <label id="eUntilLbl" hidden>Hasta (opcional)<input type="date" id="eUntil"></label>
+          <label class="wide">Notas<textarea id="eNotes" rows="2"></textarea></label>
+          <p class="note wide" id="eSeriesNote" hidden>Los cambios se aplican a todas las repeticiones.</p>
+          <div class="fberr wide" id="eErr" hidden></div>
+          <div class="actions wide">
+            <button class="btn primary" type="submit">Guardar</button>
+            <button class="btn ghost" type="button" id="eCancel">Cancelar</button>
+            <button class="btn ghost danger" type="button" id="eDelete" hidden>Borrar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div class="col">
+      <section class="panel" aria-label="Próximos exámenes y entregas">
+        <h2>Próximos exámenes y entregas</h2>
+        <div id="upcoming"></div>
+      </section>
+      <section class="panel" aria-label="Notificaciones">
+        <h2>Recordatorios</h2>
+        <p class="note" id="notifState"></p>
+        <div><button class="btn" type="button" id="notifBtn" hidden>Activar notificaciones</button></div>
+        <p class="note">Con la app cerrada los avisos no están garantizados: los pendientes aparecen arriba al volver a abrirla.</p>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===== Horario semanal ===== -->
+  <div class="col" id="page-horario" hidden>
+    <section class="panel" aria-label="Horario semanal">
+      <div class="calhead">
+        <button class="btn ghost sm" type="button" id="hzPrev" aria-label="Anterior">‹</button>
+        <h2 id="hzTitle"></h2>
+        <button class="btn ghost sm" type="button" id="hzNext" aria-label="Siguiente">›</button>
+        <button class="btn ghost sm" type="button" id="hzToday">Hoy</button>
+      </div>
+      <div id="hz"></div>
+      <div class="actions"><button class="btn primary" type="button" id="hzAdd">+ Bloque de estudio</button></div>
+      <p class="note">Toca un hueco para planificar un bloque de estudio. Los eventos con hora vienen de la agenda; las franjas rayadas son huecos libres de 1 h o más.</p>
+    </section>
+    <div class="grid">
+      <section class="panel" aria-label="Planificado y estudiado">
+        <h2>Planificado y estudiado · esta semana</h2>
+        <div class="targets" id="hzTotals"></div>
+      </section>
+      <div class="col">
+        <section class="panel detail" id="hzDetail" hidden aria-label="Bloque seleccionado"></section>
+        <section class="panel" id="hzFormPanel" hidden aria-label="Bloque de estudio">
+          <form class="manual" id="hzForm" novalidate>
+            <div class="fbhead wide" id="hzFormTitle">Nuevo bloque de estudio</div>
+            <label>Asignatura<select id="bSubj"></select></label>
+            <label>Día<input type="date" id="bDate"></label>
+            <label>Inicio<input type="time" id="bStart" step="300"></label>
+            <label>Fin<input type="time" id="bEnd" step="300"></label>
+            <label class="wide chk"><input type="checkbox" id="bRepeat"> Repetir cada semana</label>
+            <label id="bUntilLbl" hidden>Hasta (opcional)<input type="date" id="bUntil"></label>
+            <div class="fberr wide" id="bErr" hidden></div>
+            <div class="actions wide">
+              <button class="btn primary" type="submit">Guardar</button>
+              <button class="btn ghost" type="button" id="bCancel">Cancelar</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -382,6 +615,17 @@ function color(id){return "var("+COLORS[subj(id).c%COLORS.length]+")";}
 function pausedNow(a,t){return (a.pausedMs||0)+(a.pausedAt?t-a.pausedAt:0);}
 function dur(s){return s.end-s.start-(s.paused||0);}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+let curPage="registro";
+function setTitle(t){if(curPage==="registro")document.title=t;}
+/* Descansos y aprovechamiento. Una sesión tiene descansos conocidos si guarda `paused` (las del cronómetro siempre;
+   las añadidas a mano solo si se rellenó "Descansos"). Aprovechamiento = efectivo / real, sumando tiempos. */
+function known(s){return typeof s.paused==="number";}
+function realMs(s){return s.end-s.start;}
+function aggr(list){let real=0,brk=0,n=0,ex=0;for(const s of list){if(known(s)){real+=realMs(s);brk+=s.paused;n++;}else ex++;}
+  return {real,brk,eff:real-brk,n,ex,pct:real>0?Math.round((real-brk)/real*100):null};}
+function pctTxt(p){return p==null?"—":p+" %";}
+function brkTxt(ms){const m=Math.round(ms/60000);return m<60?m+" min":hm(ms);}
+function pausesTxt(n){return n===1?"1 pausa":n+" pausas";}
 
 /* ---------- persistencia ---------- */
 function lsLoad(){try{const raw=localStorage.getItem(LSKEY);if(raw){const d=JSON.parse(raw);if(d&&d.config)state=d;}}catch(e){}}
@@ -413,7 +657,7 @@ async function init(){
   let first=true;
   backend={
     saveConfig(){const c=JSON.parse(JSON.stringify(state.config));return queue(()=>configRef.set({kind:"config",...c}));},
-    addSession(s){const {id,...body}=s;return queue(()=>col.doc(id).set({kind:"session",...body}));},
+    addSession(s){const {id,...body}=s;const clean=JSON.parse(JSON.stringify(body));return queue(()=>col.doc(id).set({kind:"session",...clean}));},
     delSession(id){return queue(()=>col.doc(id).delete());},
     updateSession(id,patch){state.sessions=state.sessions.map(s=>s.id===id?{...s,...patch}:s);render();return queue(()=>col.doc(id).update(patch));}
   };
@@ -421,9 +665,10 @@ async function init(){
     const sessions=[];let cfg=null;
     for(const d of snap.docs){const v=d.data();if(!v)continue;
       if(d.id==="config")cfg=v;
-      else if(v.kind==="session")sessions.push({id:d.id,subject:v.subject,start:v.start,end:v.end,paused:v.paused||0,notes:v.notes||"",doubts:Array.isArray(v.doubts)?v.doubts:[],focus:v.focus||null});}
+      else if(v.kind==="session"){const s={id:d.id,subject:v.subject,start:v.start,end:v.end,notes:v.notes||"",doubts:Array.isArray(v.doubts)?v.doubts:[],focus:v.focus||null};
+        if(typeof v.paused==="number")s.paused=v.paused;if(typeof v.pauses==="number")s.pauses=v.pauses;if(v.manual)s.manual=true;sessions.push(s);}}
     state.sessions=sessions;
-    if(cfg){state.config={subjects:cfg.subjects||DEFAULT_SUBJECTS,goal:cfg.goal||20,active:cfg.active||null,selected:cfg.selected||(cfg.subjects&&cfg.subjects[0]&&cfg.subjects[0].id)};}
+    if(cfg){state.config={subjects:cfg.subjects||DEFAULT_SUBJECTS,goal:cfg.goal||20,active:cfg.active||null,selected:cfg.selected||(cfg.subjects&&cfg.subjects[0]&&cfg.subjects[0].id)};if(cfg.terms)state.config.terms=cfg.terms;}
     else if(first){ // primera vez: crear configuración
       backend.saveConfig();
     }
@@ -448,7 +693,7 @@ function togglePause(){
   const a=state.config.active;if(!a||a.endedAt)return;
   const now=Date.now();
   if(a.pausedAt){state.config.active={...a,pausedMs:(a.pausedMs||0)+(now-a.pausedAt),pausedAt:null};requestWake();}
-  else{state.config.active={...a,pausedAt:now};releaseWake();}
+  else{state.config.active={...a,pausedAt:now,pauseCount:(a.pauseCount||0)+1};releaseWake();}
   backend.saveConfig();render();
 }
 $("pause").addEventListener("click",togglePause);
@@ -484,7 +729,7 @@ $("fb").addEventListener("submit",e=>{
   const a=state.config.active;if(!a||!a.endedAt)return;
   const notes=$("fbNotes").value.trim();
   if(!notes){$("fbErr").hidden=false;$("fbNotes").focus();return;}
-  backend.addSession({id:uid(),subject:a.subject,start:a.startedAt,end:a.endedAt,paused:a.pausedMs||0,notes,doubts:parseDoubts($("fbDoubts").value),focus:fbFocus});
+  backend.addSession({id:uid(),subject:a.subject,start:a.startedAt,end:a.endedAt,paused:a.pausedMs||0,pauses:a.pauseCount||0,notes,doubts:parseDoubts($("fbDoubts").value),focus:fbFocus});
   state.config.active=null;clearDraft();backend.saveConfig();render();
   setSync("Sesión guardada");
 });
@@ -534,8 +779,11 @@ $("manual").addEventListener("submit",e=>{
   const st=new Date(y,mo-1,d,h,mi).getTime();const min=Number($("mMin").value);
   if(!st||!min)return;
   const notes=$("mNotes").value.trim();if(!notes){$("mNotes").focus();return;}
-  backend.addSession({id:uid(),subject:$("mSubj").value,start:st,end:st+min*60000,notes,doubts:parseDoubts($("mDoubts").value),focus:null});
-  $("mNotes").value="";$("mDoubts").value="";
+  const brkRaw=$("mBrk").value.trim();const brk=brkRaw===""?null:Math.max(0,Math.min(600,Number(brkRaw)||0));
+  const s={id:uid(),subject:$("mSubj").value,start:st,end:st+(min+(brk||0))*60000,notes,doubts:parseDoubts($("mDoubts").value),focus:null,manual:true};
+  if(brk!=null)s.paused=brk*60000; // con descansos indicados, la sesión cuenta para el aprovechamiento
+  backend.addSession(s);
+  $("mNotes").value="";$("mDoubts").value="";$("mBrk").value="";
   setSync("Sesión añadida");
 });
 $("mDate").value=dayKey(Date.now());
@@ -544,7 +792,7 @@ $("mDate").value=dayKey(Date.now());
 function liveMs(){const a=state.config.active;if(!a)return 0;const t=a.endedAt||Date.now();return t-a.startedAt-pausedNow(a,t);}
 function allWithLive(){
   const a=state.config.active;const list=state.sessions.slice();
-  if(a){const t=a.endedAt||Date.now();list.push({id:"_live",subject:a.subject,start:a.startedAt,end:t,paused:pausedNow(a,t)});}
+  if(a){const t=a.endedAt||Date.now();list.push({id:"_live",subject:a.subject,start:a.startedAt,end:t,paused:pausedNow(a,t),pauses:a.pauseCount||0});}
   return list;
 }
 function render(){
@@ -581,17 +829,22 @@ function render(){
   $("discard").hidden=!a;
   if(document.activeElement!==$("goal"))$("goal").value=cfg.goal;
   tick();renderStats();renderLog();renderDoubts();
+  if(curPage==="horario")renderHorario();
 }
 function tick(){
   const a=state.config.active;
   $("clock").textContent=hms(liveMs());
-  if(a&&a.endedAt){$("status").textContent=subj(a.subject).name+" · terminada. Completa el resumen para guardarla.";document.title="Cierre de sesión · "+subj(a.subject).name;}
+  let pc=null;const lv=$("live");
+  if(a){const t=a.endedAt||Date.now(),real=t-a.startedAt,brk=pausedNow(a,t);pc=real>0?Math.round((real-brk)/real*100):100;
+    lv.hidden=false;lv.textContent="Aprovechamiento "+pc+" % · descansos "+brkTxt(brk)+" · "+pausesTxt(a.pauseCount||0);}
+  else lv.hidden=true;
+  if(a&&a.endedAt){$("status").textContent=subj(a.subject).name+" · terminada con un "+pc+" % de aprovechamiento. Completa el resumen para guardarla.";setTitle("Cierre de sesión · "+subj(a.subject).name);}
   else if(a&&a.pausedAt){const p=Date.now()-a.pausedAt;
-    $("status").textContent="En pausa · descanso de "+(p<60000?"menos de 1 min":Math.floor(p/60000)+" min");
-    document.title="⏸ "+hms(liveMs())+" · "+subj(a.subject).name;}
+    $("status").textContent="En pausa · este descanso: "+(p<60000?"menos de 1 min":Math.floor(p/60000)+" min");
+    setTitle("⏸ "+hms(liveMs())+" · "+subj(a.subject).name);}
   else if(a){const d=new Date(a.startedAt);$("status").textContent=subj(a.subject).name+" · desde las "+pad(d.getHours())+":"+pad(d.getMinutes());
-    document.title="▶ "+hms(liveMs())+" · "+subj(a.subject).name;}
-  else{$("status").textContent="Parado";document.title="Horas de estudio";}
+    setTitle("▶ "+hms(liveMs())+" · "+subj(a.subject).name);}
+  else{$("status").textContent="Parado";setTitle("Horas de estudio");}
 }
 function renderStats(){
   const now=Date.now(),list=allWithLive();
@@ -605,35 +858,179 @@ function renderStats(){
   const left=goalMs-week;
   $("goalTxt").textContent=left>0?("Faltan "+hm(left)+" para "+state.config.goal+" h"):("Objetivo de "+state.config.goal+" h cumplido");
   renderTargets(list);
-  // reparto
+  // descansos y aprovechamiento: hoy y esta semana
+  const eb=$("effBox");eb.textContent="";
+  ["","Real","Descansos","Efectivo","Aprov."].forEach((t,i)=>{const c=document.createElement("div");c.className="h"+(i?" r":"");c.textContent=t;eb.append(c);});
+  [["Hoy",list.filter(s=>s.start>=d0)],["Semana",list.filter(s=>s.start>=w0)]].forEach(([lbl,l])=>{
+    let real=0,brk=0;l.forEach(s=>{real+=realMs(s);brk+=s.paused||0;});const A=aggr(l);
+    [lbl,hm(real),brkTxt(brk),hm(real-brk),pctTxt(A.pct)].forEach((t,i)=>{const c=document.createElement("div");c.className=i?("v"+(i===4?" p":"")):"l";c.textContent=t;eb.append(c);});
+  });
+  // reparto semanal
   const box=$("subjBreak");box.textContent="";
-  const ids=Object.keys(bySubj).sort((x,y)=>bySubj[y]-bySubj[x]);
-  if(!ids.length){const p=document.createElement("div");p.className="empty";p.textContent="Aún no hay horas esta semana. Pulsa Empezar para la primera sesión.";box.append(p);}
-  const max=Math.max(1,...ids.map(i=>bySubj[i]));
+  box.append(subjRows(bySubj,"Aún no hay horas esta semana. Pulsa Empezar para la primera sesión."));
+  renderChart();
+}
+function subjRows(by,emptyTxt){
+  const box=document.createElement("div");box.className="subj";
+  const ids=Object.keys(by).filter(i=>by[i]>0).sort((x,y)=>by[y]-by[x]);
+  if(!ids.length){const p=document.createElement("div");p.className="empty";p.textContent=emptyTxt;box.append(p);return box;}
+  const max=Math.max(1,...ids.map(i=>by[i]));
   ids.forEach(id=>{
     const r=document.createElement("div");r.className="srow";
     const n=document.createElement("div");n.className="n";const i=document.createElement("i");i.style.background=color(id);n.append(i,document.createTextNode(subj(id).name));
-    const b=document.createElement("div");b.className="bar";const f=document.createElement("div");f.style.width=(bySubj[id]/max*100)+"%";f.style.background=color(id);b.append(f);
-    const tt=document.createElement("div");tt.className="t";tt.textContent=hm(bySubj[id]);
+    const b=document.createElement("div");b.className="bar";const f=document.createElement("div");f.style.width=(by[id]/max*100)+"%";f.style.background=color(id);b.append(f);
+    const tt=document.createElement("div");tt.className="t";tt.textContent=hm(by[id]);
     r.append(n,b,tt);box.append(r);
   });
-  // gráfico 7 días
-  const days=[];for(let k=6;k>=0;k--){const d=new Date(d0);d.setDate(d.getDate()-k);days.push(d.getTime());}
-  const per=days.map(()=>({tot:0,by:{}}));
-  for(const s of list){const idx=days.findIndex((d,j)=>s.start>=d&&s.start<(days[j+1]||d+86400000));if(idx<0)continue;
-    const ms=dur(s);per[idx].tot+=ms;per[idx].by[s.subject]=(per[idx].by[s.subject]||0)+ms;}
-  const mx=Math.max(3600000,...per.map(p=>p.tot));
-  const ch=$("chart"),lb=$("chartLabels");ch.textContent="";lb.textContent="";
-  per.forEach((p,j)=>{
-    const col=document.createElement("div");col.className="day";
-    const v=document.createElement("div");v.className="v";v.textContent=p.tot?hm(p.tot):"–";
-    const wrap=document.createElement("div");wrap.style.cssText="height:100%;width:100%;display:flex;align-items:flex-end;justify-content:center";
-    const st=document.createElement("div");st.className="stack";st.style.height=(p.tot/mx*100)+"%";
-    if(!p.tot){st.style.background="var(--line)";st.style.height="2px";}
-    Object.keys(p.by).forEach(id=>{const sp=document.createElement("span");sp.style.height=(p.by[id]/p.tot*100)+"%";sp.style.background=color(id);sp.title=subj(id).name+": "+hm(p.by[id]);st.append(sp);});
-    wrap.append(st);col.append(v,wrap);ch.append(col);
-    const l=document.createElement("div");const dd=new Date(days[j]);l.textContent=DAYS[dd.getDay()]+" "+dd.getDate();if(j===6)l.className="today";lb.append(l);
+  return box;
+}
+
+/* ---------- gráficas: 7 días · mes · cuatrimestre ---------- */
+const MONTHS_L=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const UKEY="he-ui-v1";
+let ui={view:"7",showBrk:false};
+try{const u=JSON.parse(localStorage.getItem(UKEY)||"{}");if(u&&["7","mes","cuat"].includes(u.view))ui.view=u.view;if(u&&u.showBrk)ui.showBrk=true;}catch(e){}
+function uiSave(){try{localStorage.setItem(UKEY,JSON.stringify(ui));}catch(e){}}
+let monthOff=0,termOff=0,termEditOpen=false;
+document.querySelectorAll("#viewSeg button").forEach(b=>b.addEventListener("click",()=>{ui.view=b.dataset.v;uiSave();renderChart();}));
+$("showBrk").addEventListener("change",()=>{ui.showBrk=$("showBrk").checked;uiSave();renderChart();});
+$("chPrev").addEventListener("click",()=>{if(ui.view==="mes")monthOff--;else termOff--;renderChart();});
+$("chNext").addEventListener("click",()=>{if(ui.view==="mes")monthOff++;else termOff++;renderChart();});
+function niceStep(h){for(const s of [0.5,1,2,3,4,5,10,15,20,25,50,100,200])if(h/s<=4)return s;return 500;}
+function fmtH(v){return String(v).replace(".",",")+"h";}
+function bucket(list,edges){
+  const out=edges.slice(0,-1).map(()=>({by:{},brk:0,tot:0}));
+  for(const s of list){if(s.start<edges[0]||s.start>=edges[edges.length-1])continue;
+    let k=0;while(k<out.length-1&&s.start>=edges[k+1])k++;
+    const ms=dur(s),o=out[k];o.by[s.subject]=(o.by[s.subject]||0)+ms;o.tot+=ms;o.brk+=(s.paused||0);}
+  return out;
+}
+function drawBars(box,bars,o){
+  box.textContent="";const sb=ui.showBrk;
+  let mx=0;for(const b of bars){const t=b.tot+(sb?b.brk:0);if(t>mx)mx=t;}
+  if(o.ref)mx=Math.max(mx,o.ref);
+  const maxH=Math.max(1,mx/3600000),step=niceStep(maxH),top=Math.ceil(maxH/step-1e-9)*step,topMs=top*3600000;
+  const g=document.createElement("div");g.className="bc";
+  const y=document.createElement("div");y.className="bc-y";
+  const plot=document.createElement("div");plot.className="bc-plot";
+  for(let v=0;v<=top+1e-9;v+=step){const p=v/top*100;const s=document.createElement("span");s.textContent=fmtH(Math.round(v*10)/10);s.style.bottom=p+"%";y.append(s);
+    if(v>0){const l=document.createElement("div");l.className="bc-grid";l.style.bottom=p+"%";plot.append(l);}}
+  const row=document.createElement("div");row.className="bc-bars";row.style.gap=(o.gap||6)+"px";
+  bars.forEach(b=>{
+    const c=document.createElement("div");c.className="bc-col";const tot=b.tot+(sb?b.brk:0);
+    c.title=b.title+": "+hm(b.tot)+(sb&&b.brk?" · descansos "+brkTxt(b.brk):"");
+    if(o.values){const v=document.createElement("div");v.className="bc-v";v.textContent=b.tot?hm(b.tot):"–";c.append(v);}
+    const st=document.createElement("div");st.className="bc-stack";
+    if(!tot){st.style.height="2px";st.style.background="var(--line)";}
+    else{st.style.height=(tot/topMs*100)+"%";
+      Object.keys(b.by).forEach(id=>{const sp=document.createElement("span");sp.style.height=(b.by[id]/tot*100)+"%";sp.style.background=color(id);st.append(sp);});
+      if(sb&&b.brk){const sp=document.createElement("span");sp.className="brk";sp.style.height=(b.brk/tot*100)+"%";st.append(sp);}}
+    c.append(st);row.append(c);
   });
+  plot.append(row);
+  if(o.ref){const r=document.createElement("div");r.className="bc-ref";r.style.bottom=(o.ref/topMs*100)+"%";const t=document.createElement("span");t.textContent=o.refLabel||"";r.append(t);plot.append(r);}
+  const x=document.createElement("div");x.className="bc-x";x.style.gap=(o.gap||6)+"px";
+  bars.forEach(b=>{const l=document.createElement("div");l.textContent=b.label||"";if(b.today)l.className="today";x.append(l);});
+  g.append(y,plot,document.createElement("div"),x);box.append(g);
+}
+function kpis(arr){const k=document.createElement("div");k.className="kpis";
+  arr.forEach(([v,l])=>{const d=document.createElement("div");const b=document.createElement("b");b.textContent=v;const s=document.createElement("span");s.textContent=l;d.append(b,s);k.append(d);});return k;}
+function renderChart(){
+  document.querySelectorAll("#viewSeg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===ui.view)));
+  $("showBrk").checked=ui.showBrk;
+  const list=allWithLive(),box=$("chartBox"),ex=$("chExtra"),now=Date.now();ex.textContent="";
+  if(ui.view==="mes")renderMonth(list,box,ex,now);
+  else if(ui.view==="cuat")renderTerm(list,box,ex,now);
+  else{
+    $("chNav").hidden=true;const d0=startOfDay(now);
+    const edges=[];for(let k=6;k>=-1;k--){const d=new Date(d0);d.setDate(d.getDate()-k);edges.push(d.getTime());}
+    drawBars(box,bucket(list,edges).map((o,j)=>{const dd=new Date(edges[j]);const l=DAYS[dd.getDay()]+" "+dd.getDate();return {...o,label:l,title:l,today:j===6};}),{gap:8,values:true});
+  }
+  if(ui.showBrk){const p=document.createElement("p");p.className="note";const sw=document.createElement("span");sw.className="sw-brk";p.append(sw,document.createTextNode("Descansos, apilados encima de las horas de estudio."));ex.prepend(p);}
+}
+function renderMonth(list,box,ex,now){
+  const base=new Date(now),m0=new Date(base.getFullYear(),base.getMonth()+monthOff,1),y=m0.getFullYear(),m=m0.getMonth(),nd=new Date(y,m+1,0).getDate();
+  $("chNav").hidden=false;$("chTitle").textContent=MONTHS_L[m].charAt(0).toUpperCase()+MONTHS_L[m].slice(1)+" "+y;
+  $("chPrev").disabled=false;$("chNext").disabled=monthOff>=0;
+  const edges=[];for(let i=0;i<=nd;i++)edges.push(new Date(y,m,1+i).getTime());
+  const b=bucket(list,edges),tk=dayKey(now);
+  const td=(base.getFullYear()===y&&base.getMonth()===m)?base.getDate():null;
+  drawBars(box,b.map((o,i)=>{const d=i+1;let show=d===1||d%5===0;if(td&&d!==td&&Math.abs(d-td)<=2)show=false;if(d===td)show=true;
+    return {...o,label:show?String(d):"",today:dayKey(edges[i])===tk,title:d+" "+MONTHS[m]};}),{gap:2});
+  const tot=b.reduce((a,o)=>a+o.tot,0),on=b.filter(o=>o.tot>0).length;
+  ex.append(kpis([[hm(tot),"Total del mes"],[on?hm(tot/on):"—","Media por día estudiado"],[String(on),on===1?"Día estudiado":"Días estudiados"]]));
+  const by={};b.forEach(o=>{for(const k in o.by)by[k]=(by[k]||0)+o.by[k];});
+  ex.append(subjRows(by,"No hay horas este mes."));
+}
+/* Cuatrimestres: fechas MM-DD en config.terms (por defecto, las de la UCO) */
+const DEF_TERMS=[{name:"1.er cuatrimestre",start:"09-15",end:"02-14"},{name:"2.º cuatrimestre",start:"02-15",end:"07-15"}];
+function terms(){const t=state.config.terms;return Array.isArray(t)&&t.length===2&&t.every(x=>x&&/^\d\d-\d\d$/.test(x.start)&&/^\d\d-\d\d$/.test(x.end))?t:DEF_TERMS;}
+function mdTime(y,s){const [m,d]=s.split("-").map(Number);return new Date(y,m-1,d).getTime();}
+function termInstances(){
+  const out=[],y=new Date().getFullYear();
+  for(let Y=y-4;Y<=y+1;Y++)terms().forEach((t,i)=>{const st=mdTime(Y,t.start);let en=mdTime(Y,t.end);let Y2=Y;if(en<st){en=mdTime(Y+1,t.end);Y2=Y+1;}
+    const endD=new Date(en);endD.setDate(endD.getDate()+1);
+    const course=i===0?(Y+"-"+String(Y2===Y?Y+1:Y2).slice(2)):((Y-1)+"-"+String(Y).slice(2));
+    out.push({i,name:t.name,course,start:st,end:endD.getTime()-1});});
+  return out.sort((a,b)=>a.start-b.start);
+}
+function currentTermIdx(L,now){let k=L.findIndex(t=>now>=t.start&&now<=t.end);if(k<0)for(let j=L.length-1;j>=0;j--)if(L[j].end<now){k=j;break;}return k<0?0:k;}
+function fmtShort(t){const d=new Date(t);return d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear();}
+function renderTerm(list,box,ex,now){
+  const L=termInstances(),k0=currentTermIdx(L,now);const k=Math.max(0,Math.min(L.length-1,k0+termOff));termOff=k-k0;const T=L[k];
+  $("chNav").hidden=false;const ct=$("chTitle");ct.textContent=T.name+" "+T.course;
+  const sm=document.createElement("small");sm.textContent=fmtShort(T.start)+" – "+fmtShort(T.end);ct.append(sm);
+  $("chPrev").disabled=k<=0;$("chNext").disabled=k>=L.length-1||L[k+1].start>now;
+  const edges=[];let d=new Date(startOfWeek(T.start));
+  while(d.getTime()<=T.end){edges.push(d.getTime());d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+7);}edges.push(d.getTime());
+  const inT=list.filter(s=>s.start>=T.start&&s.start<=T.end);
+  const b=bucket(inT,edges),nW=b.length,every=nW>16?4:(nW>8?2:1);
+  const curW=edges.findIndex((e,i)=>i<nW&&now>=e&&now<edges[i+1]);
+  const goal=state.config.goal;
+  drawBars(box,b.map((o,i)=>{const dd=new Date(edges[i]);return {...o,label:i%every===0?dd.getDate()+"/"+(dd.getMonth()+1):"",today:i===curW,title:"Semana del "+dd.getDate()+" "+MONTHS[dd.getMonth()]};}),
+    {gap:3,ref:goal*3600000,refLabel:"objetivo "+goal+" h"});
+  const tot=b.reduce((a,o)=>a+o.tot,0);
+  const weeks=now>T.end?nW:(now<T.start?0:curW+1);
+  const avg=weeks?tot/weeks:0;
+  ex.append(kpis([[hm(tot),"Total del cuatrimestre"],[weeks?hm(avg):"—","Media semanal"+(weeks&&now<=T.end?" (hasta hoy)":"")],[weeks?Math.round(avg/(goal*3600000)*100)+" %":"—","De tu objetivo de "+goal+" h/semana"]]));
+  ex.append(aprovBlock(inT));
+  ex.append(termEditor(T));
+}
+function aprovBlock(list){
+  const w=document.createElement("div");w.className="aprov";
+  const h=document.createElement("h2");h.textContent="Aprovechamiento del cuatrimestre";
+  const p=document.createElement("p");p.className="note";p.textContent="Tiempo efectivo (sin descansos) sobre el tiempo real de sesión, sumando todas las sesiones de cada asignatura.";
+  w.append(h,p);
+  const g={};list.forEach(s=>{(g[s.subject]=g[s.subject]||[]).push(s);});
+  const ids=Object.keys(g).sort((a,b)=>aggr(g[b]).real-aggr(g[a]).real);
+  if(!ids.length){const e=document.createElement("div");e.className="empty";e.textContent="Aún no hay sesiones en este cuatrimestre.";w.append(e);return w;}
+  ids.forEach(id=>w.append(arow(subj(id).name,color(id),aggr(g[id]),false)));
+  const G=aggr(list);w.append(arow("Global","var(--accent)",G,true));
+  if(G.ex){const n=document.createElement("p");n.className="note";
+    n.textContent=(G.ex===1?"1 sesión añadida a mano sin descansos no cuenta":G.ex+" sesiones añadidas a mano sin descansos no cuentan")+" para el aprovechamiento (sí para las horas).";w.append(n);}
+  return w;
+}
+function arow(name,col,A,global){
+  const r=document.createElement("div");r.className="arow"+(global?" global":"");
+  const top=document.createElement("div");top.className="top";
+  const n=document.createElement("div");n.className="n";if(!global){const i=document.createElement("i");i.style.background=col;n.append(i);}n.append(document.createTextNode(name));
+  const p=document.createElement("div");p.className="p";p.textContent=pctTxt(A.pct);top.append(n,p);
+  const b=document.createElement("div");b.className="bar";const f=document.createElement("div");f.style.width=(A.pct||0)+"%";f.style.background=col;b.append(f);
+  const m=document.createElement("div");m.className="m";
+  m.textContent=A.n?("real "+hm(A.real)+" · descansos "+brkTxt(A.brk)+" · efectivo "+hm(A.eff)+" · "+A.n+(A.n===1?" sesión":" sesiones")):"Sin sesiones con descansos registrados";
+  r.append(top,b,m);return r;
+}
+function termEditor(T){
+  const d=document.createElement("details");d.className="terms";d.open=termEditOpen;
+  d.addEventListener("toggle",()=>{termEditOpen=d.open;});
+  const s=document.createElement("summary");s.textContent="Cambiar fechas del "+T.name;d.append(s);
+  const f=document.createElement("div");f.className="manual";
+  const mk=(lbl,val,key)=>{const l=document.createElement("label");l.textContent=lbl;const i=document.createElement("input");i.type="date";i.value=val;
+    i.addEventListener("change",()=>{if(!i.value)return;const md=i.value.slice(5);state.config.terms=terms().map((t,j)=>j===T.i?{...t,[key]:md}:{...t});backend.saveConfig();renderChart();});
+    l.append(i);return l;};
+  f.append(mk("Inicio",dayKey(T.start),"start"),mk("Fin",dayKey(T.end),"end"));
+  const n=document.createElement("p");n.className="note wide";n.textContent="Se aplican a ese cuatrimestre de todos los cursos.";f.append(n);
+  d.append(f);return d;
 }
 let targetSig="",targetT={};
 function renderTargets(list){
@@ -705,18 +1102,23 @@ function renderLog(){
   const list=state.sessions.slice().sort((a,b)=>b.start-a.start);
   if(!list.length){const p=document.createElement("div");p.className="empty";p.textContent="Aquí aparecerán tus sesiones guardadas, agrupadas por día.";box.append(p);return;}
   let curKey=null;
-  const totals={};list.forEach(s=>{const k=dayKey(s.start);totals[k]=(totals[k]||0)+dur(s);});
+  const totals={},brks={};list.forEach(s=>{const k=dayKey(s.start);totals[k]=(totals[k]||0)+dur(s);brks[k]=(brks[k]||0)+(s.paused||0);});
   list.slice(0,200).forEach(s=>{
     const k=dayKey(s.start);
     if(k!==curKey){curKey=k;const d=new Date(s.start);const h=document.createElement("div");h.className="dayhead";
       const a=document.createElement("span");a.textContent=(k===dayKey(Date.now())?"Hoy · ":"")+DAYS[d.getDay()]+" "+d.getDate()+" "+MONTHS[d.getMonth()];
-      const b=document.createElement("span");b.textContent=hm(totals[k]);h.append(a,b);box.append(h);}
+      const b=document.createElement("span");b.textContent="efectivo "+hm(totals[k])+" · descansos "+brkTxt(brks[k]);h.append(a,b);box.append(h);}
     const r=document.createElement("div");r.className="entry";
     const i=document.createElement("i");i.style.background=color(s.subject);
     const n=document.createElement("div");n.style.minWidth="0";
     const nm=document.createElement("div");nm.textContent=subj(s.subject).name;
     const w=document.createElement("div");w.className="when";const a=new Date(s.start),e=new Date(s.end);
-    w.textContent=pad(a.getHours())+":"+pad(a.getMinutes())+"–"+pad(e.getHours())+":"+pad(e.getMinutes())+(s.paused>=60000?" · pausas "+hm(s.paused):"")+(s.focus?" · concentración "+s.focus+"/5":"");n.append(nm,w);
+    let bx;
+    if(known(s)){const np=s.pauses;
+      bx=typeof np==="number"?(np===0?"sin pausas":pausesTxt(np)+" · "+brkTxt(s.paused)):(s.paused>=60000?"descansos "+brkTxt(s.paused):"sin descansos");
+      bx+=" · aprov. "+pctTxt(aggr([s]).pct);}
+    else bx="añadida a mano, sin descansos";
+    w.textContent=pad(a.getHours())+":"+pad(a.getMinutes())+"–"+pad(e.getHours())+":"+pad(e.getMinutes())+" · "+bx+(s.focus?" · concentración "+s.focus+"/5":"");n.append(nm,w);
     if(s.notes){const tx=document.createElement("div");tx.className="txt";tx.textContent=s.notes;n.append(tx);}
     if(s.doubts&&s.doubts.length){const tx=document.createElement("div");tx.className="txt";const b=document.createElement("b");b.textContent="Dudas: ";
       tx.append(b,document.createTextNode(s.doubts.map(d=>(d.r?"✓ ":"")+d.t).join(" · ")));n.append(tx);}
@@ -734,7 +1136,7 @@ setInterval(()=>{const a=state.config.active;if(a&&!a.endedAt){tick();if(Math.fl
 
 /* ---------- app instalable: copia de seguridad y modo sin conexión ---------- */
 $("exportBtn").addEventListener("click",()=>{
-  const blob=new Blob([JSON.stringify({app:"horas-estudio",version:1,exportedAt:new Date().toISOString(),data:state},null,2)],{type:"application/json"});
+  const blob=new Blob([JSON.stringify({app:"horas-estudio",version:2,exportedAt:new Date().toISOString(),data:state,sections:{agenda:ag,horario:hz}},null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="horas-estudio-"+dayKey(Date.now())+".json";
   document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   $("backupMsg").textContent="Copia exportada.";
@@ -744,19 +1146,393 @@ $("importFile").addEventListener("change",async e=>{
   try{
     const j=JSON.parse(await f.text());const d=j&&j.data;
     if(!d||!d.config||!Array.isArray(d.sessions))throw new Error();
-    state=d;lsSave();render();
-    $("backupMsg").textContent="Copia importada: "+d.sessions.length+" sesiones.";
+    state=d;lsSave();
+    const sec=j.sections||{};let extra="";
+    if(sec.agenda&&Array.isArray(sec.agenda.events)){ag={events:sec.agenda.events,fired:sec.agenda.fired||{},alerts:[]};agSave();extra+=", "+ag.events.length+" eventos";}
+    if(sec.horario&&Array.isArray(sec.horario.blocks)){hz={blocks:sec.horario.blocks};hzSave();extra+=", "+hz.blocks.length+" bloques de estudio";}
+    render();renderAlerts();
+    $("backupMsg").textContent="Copia importada: "+d.sessions.length+" sesiones"+extra+".";
   }catch(err){$("backupMsg").textContent="Ese archivo no es una copia válida de Horas de estudio.";}
   e.target.value="";
 });
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
 
+/* ---------- fechas como clave YYYY-MM-DD ---------- */
+function kd(k){const [y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d);}
+function addDays(k,n){const d=kd(k);d.setDate(d.getDate()+n);return dayKey(d.getTime());}
+function daysBetween(a,b){return Math.round((kd(b)-kd(a))/86400000);}
+function toMin(t){if(!t)return 0;const [h,m]=t.split(":").map(Number);return h*60+(m||0);}
+function fromMin(m){return pad(Math.floor(m/60))+":"+pad(m%60);}
+const DAYS_L=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+function fmtDayLong(k){const d=kd(k);return DAYS_L[d.getDay()]+" "+d.getDate()+" de "+MONTHS_L[d.getMonth()];}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function monthKey(k){const d=kd(k);return dayKey(new Date(d.getFullYear(),d.getMonth(),1).getTime());}
+/* Repeticiones semanales: items con date, repeat y until opcional */
+function occOf(items,from,to){
+  const out=[];
+  for(const ev of items){
+    if(!ev||!ev.date)continue;
+    if(!ev.repeat){if(ev.date>=from&&ev.date<=to)out.push({ev,date:ev.date});continue;}
+    let k=ev.date;if(k<from){k=addDays(k,Math.ceil(daysBetween(k,from)/7)*7);}
+    const until=ev.until||"9999-12-31";
+    while(k<=to&&k<=until){out.push({ev,date:k});k=addDays(k,7);}
+  }
+  return out.sort((a,b)=>a.date.localeCompare(b.date)||(a.ev.allDay?-1:toMin(a.ev.start))-(b.ev.allDay?-1:toMin(b.ev.start)));
+}
+function fillSubjSelect(sel,allowNone,cur){
+  sel.textContent="";
+  if(allowNone){const o=document.createElement("option");o.value="";o.textContent="— Ninguna —";sel.append(o);}
+  state.config.subjects.filter(s=>!s.archived||s.id===cur).forEach(s=>{const o=document.createElement("option");o.value=s.id;o.textContent=s.name;sel.append(o);});
+  sel.value=cur||(allowNone?"":(state.config.selected||""));
+  if(!sel.value&&sel.options.length)sel.selectedIndex=0;
+}
+function armButton(btn,label,armedLabel,fn){
+  let armedB=false,t=null;
+  btn.addEventListener("click",()=>{if(!armedB){armedB=true;btn.textContent=armedLabel();t=setTimeout(()=>{armedB=false;btn.textContent=label;},3000);return;}
+    clearTimeout(t);armedB=false;btn.textContent=label;fn();});
+}
+
+/* ---------- Agenda y recordatorios ---------- */
+const AKEY="he-agenda-v1";
+let ag={events:[],fired:{},alerts:[]};
+function agLoad(){try{const d=JSON.parse(localStorage.getItem(AKEY)||"null");if(d&&Array.isArray(d.events))ag={events:d.events,fired:d.fired||{},alerts:Array.isArray(d.alerts)?d.alerts:[]};}catch(e){}}
+function agSave(){try{localStorage.setItem(AKEY,JSON.stringify(ag));}catch(e){}}
+agLoad();
+const TYPE_COLOR={Clase:"var(--s1)",Examen:"var(--danger)",Entrega:"var(--s3)",Tarea:"var(--s5)",Otro:"var(--muted)"};
+const REMIND_TXT={0:"al momento",10:"10 min antes",60:"1 h antes",1440:"1 día antes"};
+function evColor(ev){return ev.subject?color(ev.subject):(TYPE_COLOR[ev.type]||"var(--muted)");}
+function evTime(ev){return ev.allDay?"Todo el día":ev.start+(ev.end?"–"+ev.end:"");}
+function evStartMs(ev,date){const d=kd(date);const m=ev.allDay?9*60:toMin(ev.start);d.setHours(Math.floor(m/60),m%60,0,0);return d.getTime();}
+function hasRemind(ev){return typeof ev.remind==="number";}
+let agMonth=monthKey(dayKey(Date.now())),agSel=dayKey(Date.now()),agEdit=null;
+function renderAgenda(){renderCal();renderDay();renderUpcoming();renderNotif();}
+function renderCal(){
+  const m=kd(agMonth);$("calTitle").textContent=cap(MONTHS_L[m.getMonth()])+" "+m.getFullYear();
+  const box=$("cal");box.textContent="";
+  ["L","M","X","J","V","S","D"].forEach(t=>{const w=document.createElement("div");w.className="wd";w.textContent=t;box.append(w);});
+  const first=dayKey(startOfWeek(m.getTime())),last=addDays(first,41),today=dayKey(Date.now());
+  const by={};occOf(ag.events,first,last).forEach(o=>(by[o.date]=by[o.date]||[]).push(o));
+  for(let i=0;i<42;i++){
+    const k=addDays(first,i),d=kd(k);
+    if(i===35&&d.getMonth()!==m.getMonth())break; // sin sexta fila vacía
+    const b=document.createElement("button");b.type="button";
+    if(d.getMonth()!==m.getMonth())b.classList.add("out");if(k===today)b.classList.add("today");
+    b.setAttribute("aria-pressed",String(k===agSel));
+    const n=document.createElement("span");n.textContent=d.getDate();
+    const dots=document.createElement("span");dots.className="dots";const L=by[k]||[];
+    L.slice(0,4).forEach(o=>{const i2=document.createElement("i");i2.style.background=evColor(o.ev);dots.append(i2);});
+    b.setAttribute("aria-label",fmtDayLong(k)+(L.length?", "+L.length+(L.length===1?" evento":" eventos"):""));
+    b.append(n,dots);
+    b.addEventListener("click",()=>{agSel=k;agMonth=monthKey(k);renderAgenda();});
+    box.append(b);
+  }
+}
+function renderDay(){
+  $("dayTitle").textContent=(agSel===dayKey(Date.now())?"Hoy · ":"")+fmtDayLong(agSel);
+  const box=$("dayList");box.textContent="";
+  const L=occOf(ag.events,agSel,agSel);
+  if(!L.length){const p=document.createElement("div");p.className="empty";p.textContent="No hay nada este día. Pulsa + Evento para añadir una clase, un examen, una entrega o una tarea.";box.append(p);return;}
+  L.forEach(({ev,date})=>{
+    const done=!!(ev.done&&ev.done[date]);
+    const r=document.createElement("div");r.className="ev"+(done?" done":"");
+    const bar=document.createElement("span");bar.className="bar4";bar.style.background=evColor(ev);
+    const body=document.createElement("div");body.style.minWidth="0";
+    const t=document.createElement("div");t.className="t";t.textContent=ev.title;
+    const m=document.createElement("div");m.className="m";const bd=document.createElement("span");bd.className="badge";bd.textContent=ev.type;
+    m.append(bd,document.createTextNode(evTime(ev)+(ev.subject?" · "+subj(ev.subject).name:"")+(ev.repeat?" · cada semana":"")+(hasRemind(ev)?" · aviso "+REMIND_TXT[ev.remind]:"")));
+    body.append(t,m);
+    if(ev.notes){const nt=document.createElement("div");nt.className="m";nt.style.whiteSpace="pre-wrap";nt.textContent=ev.notes;body.append(nt);}
+    const side=document.createElement("div");side.className="side";
+    if(ev.type==="Tarea"||ev.type==="Entrega"){
+      const lb=document.createElement("label");lb.className="chk";const cb=document.createElement("input");cb.type="checkbox";cb.checked=done;
+      cb.addEventListener("change",()=>{ev.done=ev.done||{};if(cb.checked)ev.done[date]=true;else delete ev.done[date];agSave();renderAgenda();});
+      lb.append(cb,document.createTextNode("Hecha"));side.append(lb);}
+    const ed=document.createElement("button");ed.type="button";ed.className="btn ghost sm";ed.textContent="Editar";ed.setAttribute("aria-label","Editar "+ev.title);
+    ed.addEventListener("click",()=>openEvForm(ev));side.append(ed);
+    r.append(bar,body,side);box.append(r);
+  });
+}
+function renderUpcoming(){
+  const box=$("upcoming");box.textContent="";const today=dayKey(Date.now()),now=Date.now();
+  const L=occOf(ag.events,today,addDays(today,120)).filter(o=>(o.ev.type==="Examen"||o.ev.type==="Entrega")&&!(o.ev.done&&o.ev.done[o.date])
+    &&!(o.date===today&&!o.ev.allDay&&toMin(o.ev.end||o.ev.start)<new Date(now).getHours()*60+new Date(now).getMinutes()));
+  if(!L.length){const p=document.createElement("div");p.className="empty";p.textContent="Sin exámenes ni entregas en los próximos 4 meses.";box.append(p);return;}
+  L.slice(0,8).forEach(({ev,date})=>{
+    const n=daysBetween(today,date);
+    const b=document.createElement("button");b.type="button";b.className="uprow";
+    const cd=document.createElement("span");cd.className="cd"+(n<=3?" soon":"");cd.textContent=n===0?"Hoy":n===1?"Mañana":n+" días";
+    const tx=document.createElement("span");tx.style.minWidth="0";const t=document.createElement("div");t.textContent=ev.title;
+    const m=document.createElement("div");m.className="m";const d=kd(date);
+    m.textContent=ev.type+(ev.subject?" · "+subj(ev.subject).name:"")+" · "+DAYS[d.getDay()]+" "+d.getDate()+" "+MONTHS[d.getMonth()]+(ev.allDay?"":" · "+ev.start);
+    tx.append(t,m);b.append(cd,tx);
+    b.addEventListener("click",()=>{agSel=date;agMonth=monthKey(date);renderAgenda();window.scrollTo({top:0,behavior:"smooth"});});
+    box.append(b);
+  });
+}
+function syncEvForm(){const ad=$("eAllDay").checked;$("eStartLbl").hidden=ad;$("eEndLbl").hidden=ad;$("eUntilLbl").hidden=!$("eRepeat").checked;
+  $("eSeriesNote").hidden=!(agEdit&&$("eRepeat").checked);}
+function openEvForm(ev){
+  agEdit=ev?ev.id:null;$("evFormPanel").hidden=false;$("evFormTitle").textContent=ev?"Editar evento":"Nuevo evento";
+  $("eTitle").value=ev?ev.title:"";$("eDate").value=ev?ev.date:agSel;$("eType").value=ev?ev.type:"Clase";
+  $("eAllDay").checked=!!(ev&&ev.allDay);$("eStart").value=(ev&&ev.start)||"09:00";$("eEnd").value=ev?(ev.end||""):"10:00";
+  fillSubjSelect($("eSubj"),true,ev&&ev.subject);
+  $("eRemind").value=ev&&hasRemind(ev)?String(ev.remind):"";
+  $("eRepeat").checked=!!(ev&&ev.repeat);$("eUntil").value=(ev&&ev.until)||"";
+  $("eNotes").value=ev?(ev.notes||""):"";$("eDelete").hidden=!ev;$("eDelete").textContent="Borrar";$("eErr").hidden=true;
+  syncEvForm();$("evFormPanel").scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>$("eTitle").focus({preventScroll:true}),60);
+}
+function closeEvForm(){$("evFormPanel").hidden=true;agEdit=null;}
+$("eAllDay").addEventListener("change",syncEvForm);$("eRepeat").addEventListener("change",syncEvForm);
+$("evAdd").addEventListener("click",()=>openEvForm(null));
+$("eCancel").addEventListener("click",closeEvForm);
+armButton($("eDelete"),"Borrar",()=>{const ev=ag.events.find(x=>x.id===agEdit);return ev&&ev.repeat?"¿Borrar todas las repeticiones?":"¿Seguro? Pulsa otra vez";},()=>{
+  ag.events=ag.events.filter(x=>x.id!==agEdit);ag.alerts=ag.alerts.filter(a=>a.id!==agEdit);agSave();closeEvForm();renderAgenda();renderAlerts();});
+$("evForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const err=t=>{$("eErr").textContent=t;$("eErr").hidden=false;};
+  const title=$("eTitle").value.trim(),date=$("eDate").value;
+  if(!title){err("Pon un título.");$("eTitle").focus();return;}
+  if(!date){err("Elige la fecha.");return;}
+  const allDay=$("eAllDay").checked,start=$("eStart").value,end=$("eEnd").value;
+  if(!allDay&&!start){err("Pon la hora de inicio o marca Todo el día.");return;}
+  if(!allDay&&end&&toMin(end)<=toMin(start)){err("La hora de fin tiene que ser posterior a la de inicio.");return;}
+  const repeat=$("eRepeat").checked,until=repeat&&$("eUntil").value?$("eUntil").value:null;
+  if(until&&until<date){err("La fecha de fin de la repetición es anterior a la del evento.");return;}
+  const rv=$("eRemind").value;
+  const data={title,date,allDay,start:allDay?null:start,end:allDay?null:(end||null),type:$("eType").value,subject:$("eSubj").value||null,
+    notes:$("eNotes").value.trim(),remind:rv===""?null:Number(rv),repeat,until};
+  if(agEdit){ag.events=ag.events.map(x=>{if(x.id!==agEdit)return x;
+      const moved=x.date!==data.date||x.start!==data.start||x.remind!==data.remind||!!x.allDay!==allDay||!!x.repeat!==repeat;
+      return {...x,...data,created:moved?Date.now():x.created};});}
+  else ag.events.push({id:uid(),created:Date.now(),done:{},...data});
+  agSave();agSel=date;agMonth=monthKey(date);closeEvForm();renderAgenda();checkReminders();
+  setSync("Evento guardado");
+});
+$("calPrev").addEventListener("click",()=>{const d=kd(agMonth);agMonth=dayKey(new Date(d.getFullYear(),d.getMonth()-1,1).getTime());renderCal();});
+$("calNext").addEventListener("click",()=>{const d=kd(agMonth);agMonth=dayKey(new Date(d.getFullYear(),d.getMonth()+1,1).getTime());renderCal();});
+$("calToday").addEventListener("click",()=>{agSel=dayKey(Date.now());agMonth=monthKey(agSel);renderAgenda();});
+/* Recordatorios */
+function renderNotif(){
+  const st=$("notifState"),b=$("notifBtn");
+  if(!("Notification" in window)){st.textContent="Este navegador no permite notificaciones; los avisos se muestran dentro de la app. En iPhone hay que instalar la app en la pantalla de inicio para poder activarlas.";b.hidden=true;return;}
+  const p=Notification.permission;
+  if(p==="granted"){st.textContent="Notificaciones activadas.";b.hidden=true;}
+  else if(p==="denied"){st.textContent="Las notificaciones están bloqueadas en los ajustes del navegador; los avisos se muestran dentro de la app.";b.hidden=true;}
+  else{st.textContent="Los avisos se muestran dentro de la app. Actívalas para recibirlos también como notificación del móvil.";b.hidden=false;}
+}
+$("notifBtn").addEventListener("click",async()=>{try{await Notification.requestPermission();}catch(e){}renderNotif();});
+function notify(title,body){
+  try{
+    if(!("Notification" in window)||Notification.permission!=="granted")return;
+    const opts={body,icon:"icons/icon-192.png",badge:"icons/icon-192.png",tag:title+"|"+body};
+    const plain=()=>{try{new Notification(title,opts);}catch(e){}};
+    if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration)
+      navigator.serviceWorker.getRegistration().then(r=>{if(r&&r.showNotification)r.showNotification(title,opts).catch(plain);else plain();}).catch(plain);
+    else plain();
+  }catch(e){}
+}
+function remindText(ev,date){
+  const n=daysBetween(dayKey(Date.now()),date);
+  const when=(n===0?"hoy":n===1?"mañana":n===-1?"ayer":fmtDayLong(date))+(ev.allDay?"":" a las "+ev.start);
+  return ev.type+(ev.subject?" · "+subj(ev.subject).name:"")+" · "+when;
+}
+function checkReminders(){
+  const now=Date.now(),today=dayKey(now);let changed=false;
+  for(const {ev,date} of occOf(ag.events,addDays(today,-7),addDays(today,2))){
+    if(!hasRemind(ev))continue;
+    const key=ev.id+"|"+date;if(ag.fired[key])continue;
+    const at=evStartMs(ev,date)-ev.remind*60000;if(now<at)continue;
+    ag.fired[key]=1;changed=true;
+    if(ev.created&&evStartMs(ev,date)<ev.created)continue; // el evento ya había empezado cuando se creó
+    if(ev.done&&ev.done[date])continue;
+    const text=remindText(ev,date);
+    ag.alerts.push({key,id:ev.id,date,title:ev.title,text});
+    if(now-at<15*60000)notify(ev.title,text);
+  }
+  const old=addDays(today,-30);
+  for(const k of Object.keys(ag.fired)){const d=k.split("|")[1];if(d&&d<old){delete ag.fired[k];changed=true;}}
+  if(changed){agSave();renderAlerts();if(curPage==="agenda")renderAgenda();}
+}
+function renderAlerts(){
+  const box=$("alerts");box.textContent="";const L=ag.alerts.slice(-4).reverse();box.hidden=!ag.alerts.length;
+  const dismiss=key=>{ag.alerts=ag.alerts.filter(a=>a.key!==key);agSave();renderAlerts();};
+  L.forEach(a=>{
+    const r=document.createElement("div");r.className="alert";
+    const t=document.createElement("div");t.style.minWidth="0";const b=document.createElement("b");b.textContent=a.title;
+    const s=document.createElement("div");s.className="note";s.textContent=a.text;t.append(b,s);
+    const acts=document.createElement("div");acts.className="actions";
+    const v=document.createElement("button");v.type="button";v.className="btn sm";v.textContent="Ver";
+    v.addEventListener("click",()=>{agSel=a.date;agMonth=monthKey(a.date);dismiss(a.key);if(location.hash!=="#agenda")location.hash="#agenda";else renderAgenda();});
+    const x=document.createElement("button");x.type="button";x.className="btn ghost sm";x.textContent="Visto";x.addEventListener("click",()=>dismiss(a.key));
+    acts.append(v,x);r.append(t,acts);box.append(r);
+  });
+  if(ag.alerts.length>4){const m=document.createElement("button");m.type="button";m.className="showres";m.textContent="Hay "+(ag.alerts.length-4)+" avisos más · marcar todos como vistos";
+    m.addEventListener("click",()=>{ag.alerts=[];agSave();renderAlerts();});box.append(m);}
+}
+
+/* ---------- Horario semanal ---------- */
+const HKEY="he-horario-v1";
+let hz={blocks:[]};
+function hzLoad(){try{const d=JSON.parse(localStorage.getItem(HKEY)||"null");if(d&&Array.isArray(d.blocks))hz={blocks:d.blocks};}catch(e){}}
+function hzSave(){try{localStorage.setItem(HKEY,JSON.stringify(hz));}catch(e){}}
+hzLoad();
+const H0=7*60,H1=22*60,SLOT=30,ROWH=22,COLH=(H1-H0)/SLOT*ROWH;
+const mqMobile=window.matchMedia("(max-width:700px)");
+let hzDay=dayKey(Date.now()),hzEdit=null,hzSel=null;
+function weekOf(k){return dayKey(startOfWeek(kd(k).getTime()));}
+function hzDays(){const w=weekOf(hzDay);return mqMobile.matches?[hzDay]:Array.from({length:7},(_,i)=>addDays(w,i));}
+function yPx(m){return (m-H0)/SLOT*ROWH;}
+function renderHorario(){
+  const days=hzDays(),wk=weekOf(hzDay),wkEnd=addDays(wk,6),a=kd(wk),b=kd(wkEnd),today=dayKey(Date.now()),mob=mqMobile.matches;
+  $("hzTitle").textContent=mob?cap(fmtDayLong(hzDay)):(a.getDate()+(a.getMonth()!==b.getMonth()?" "+MONTHS[a.getMonth()]:"")+"–"+b.getDate()+" "+MONTHS[b.getMonth()]+" "+b.getFullYear());
+  const box=$("hz");box.textContent="";
+  const cols="40px repeat("+days.length+",minmax(0,1fr))";
+  const evs=occOf(ag.events,days[0],days[days.length-1]),blks=occOf(hz.blocks,days[0],days[days.length-1]);
+  if(mob){
+    const strip=document.createElement("div");strip.className="hzstrip";
+    for(let i=0;i<7;i++){const k=addDays(wk,i),d=kd(k);const bt=document.createElement("button");bt.type="button";
+      if(k===today)bt.classList.add("today");bt.setAttribute("aria-pressed",String(k===hzDay));bt.setAttribute("aria-label",fmtDayLong(k));
+      const s1=document.createElement("span");s1.textContent=DAYS[d.getDay()];const s2=document.createElement("b");s2.textContent=d.getDate();bt.append(s1,s2);
+      bt.addEventListener("click",()=>{hzDay=k;renderHorario();});strip.append(bt);}
+    box.append(strip);
+  }else{
+    const head=document.createElement("div");head.className="hzrow";head.style.gridTemplateColumns=cols;head.append(document.createElement("div"));
+    days.forEach(k=>{const d=kd(k);const h=document.createElement("div");h.className="hzh"+(k===today?" today":"");h.textContent=DAYS[d.getDay()]+" "+d.getDate();head.append(h);});
+    box.append(head);
+  }
+  const ad=evs.filter(o=>o.ev.allDay);
+  if(ad.length){
+    const row=document.createElement("div");row.className="hzrow";row.style.gridTemplateColumns=cols;row.style.marginTop="4px";
+    const l=document.createElement("div");l.className="hzlbl";l.textContent="Día";row.append(l);
+    days.forEach(k=>{const c=document.createElement("div");c.className="hzadc";
+      ad.filter(o=>o.date===k).forEach(o=>{const ch=document.createElement("button");ch.type="button";ch.className="hzchip";ch.style.borderLeftColor=evColor(o.ev);
+        ch.textContent=o.ev.title;ch.title=o.ev.type+" · "+o.ev.title;ch.addEventListener("click",()=>goAgenda(o.date));c.append(ch);});
+      row.append(c);});
+    box.append(row);
+  }
+  const body=document.createElement("div");body.className="hzrow hzbody";body.style.gridTemplateColumns=cols;
+  const tc=document.createElement("div");tc.className="hzt";tc.style.height=COLH+"px";
+  for(let m=H0;m<=H1;m+=60){const s=document.createElement("span");s.style.top=yPx(m)+"px";s.textContent=fromMin(m);tc.append(s);}
+  body.append(tc);
+  days.forEach(k=>body.append(dayCol(k,evs.filter(o=>o.date===k&&!o.ev.allDay),blks.filter(o=>o.date===k),k===today)));
+  box.append(body);
+  renderHzTotals(wk,wkEnd);renderHzDetail();
+}
+function goAgenda(date){agSel=date;agMonth=monthKey(date);location.hash="#agenda";}
+function dayCol(k,evs,blks,isToday){
+  const c=document.createElement("div");c.className="hzc"+(isToday?" today":"");c.style.height=COLH+"px";
+  const items=[];
+  evs.forEach(o=>{const s=toMin(o.ev.start),e=o.ev.end?toMin(o.ev.end):s+60;items.push({kind:"ev",o,s0:s,e0:e});});
+  blks.forEach(o=>items.push({kind:"blk",o,s0:toMin(o.ev.start),e0:toMin(o.ev.end)}));
+  const vis=items.filter(x=>x.e0>H0&&x.s0<H1).map(x=>({...x,s:Math.max(H0,x.s0),e:Math.min(H1,Math.max(x.e0,x.s0+20))})).sort((p,q)=>p.s-q.s||q.e-p.e);
+  // huecos libres de 1 h o más entre 08:00 y 21:00
+  let cur=8*60;const gaps=[];
+  vis.forEach(x=>{if(x.s>cur)gaps.push([cur,Math.min(x.s,21*60)]);cur=Math.max(cur,x.e);});
+  if(cur<21*60)gaps.push([cur,21*60]);
+  gaps.filter(([s,e])=>e-s>=60).forEach(([s,e])=>{const g=document.createElement("div");g.className="hzfree";g.style.top=(yPx(s)+1)+"px";g.style.height=(yPx(e)-yPx(s)-2)+"px";
+    if(e-s>=90)g.textContent="libre "+hm((e-s)*60000);c.append(g);});
+  // carriles para solapes
+  const lanes=[];vis.forEach(x=>{let l=lanes.findIndex(e=>e<=x.s);if(l<0){l=lanes.length;lanes.push(x.e);}else lanes[l]=x.e;x.lane=l;});
+  const n=Math.max(1,lanes.length);
+  vis.forEach(x=>{
+    const el=document.createElement("div");el.className="hzi "+(x.kind==="ev"?"hev":"blk");el.tabIndex=0;el.setAttribute("role","button");
+    const h=Math.max(ROWH-2,yPx(x.e)-yPx(x.s)-2);
+    el.style.top=(yPx(x.s)+1)+"px";el.style.height=h+"px";
+    el.style.left="calc("+(x.lane*100/n)+"% + 2px)";el.style.width="calc("+(100/n)+"% - 4px)";
+    const ev=x.o.ev,t=document.createElement("b"),tm=document.createElement("span");
+    tm.textContent=fromMin(x.s0)+"–"+fromMin(x.e0);
+    let act;
+    if(x.kind==="ev"){el.style.borderLeftColor=evColor(ev);t.textContent=ev.title;el.title=ev.type+" · "+ev.title+" · "+tm.textContent;el.append(t,tm);act=()=>goAgenda(x.o.date);}
+    else{el.style.borderLeftColor=color(ev.subject);el.style.borderColor=color(ev.subject);t.textContent=subj(ev.subject).name;el.title="Estudio · "+subj(ev.subject).name+" · "+tm.textContent;el.append(t,tm);
+      if(h>=2*ROWH+8){const go=document.createElement("button");go.type="button";go.className="go";go.textContent="Empezar";
+        go.addEventListener("click",e=>{e.stopPropagation();startFromBlock(ev.subject);});el.append(go);}
+      act=()=>{hzSel={id:ev.id,date:x.o.date};renderHzDetail();$("hzDetail").scrollIntoView({behavior:"smooth",block:"nearest"});};}
+    el.addEventListener("click",e=>{e.stopPropagation();act();});
+    el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});
+    c.append(el);
+  });
+  if(isToday){const d=new Date(),m=d.getHours()*60+d.getMinutes();if(m>=H0&&m<=H1){const l=document.createElement("div");l.className="hznow";l.style.top=yPx(m)+"px";c.append(l);}}
+  c.addEventListener("click",e=>{if(e.target!==c)return;const r=c.getBoundingClientRect();const m=H0+Math.floor((e.clientY-r.top)/ROWH)*SLOT;openBlkForm(null,k,Math.max(H0,Math.min(m,H1-60)));});
+  return c;
+}
+function startFromBlock(id){
+  if(state.config.active){location.hash="#registro";setSync("Ya hay una sesión en marcha: termínala antes de empezar otra.");return;}
+  state.config.selected=id;start();location.hash="#registro";setSync("Sesión empezada: "+subj(id).name);
+}
+function renderHzDetail(){
+  const box=$("hzDetail");box.textContent="";
+  const b=hzSel&&hz.blocks.find(x=>x.id===hzSel.id);
+  if(!b){box.hidden=true;return;}box.hidden=false;
+  const t=document.createElement("div");t.className="t";t.textContent=subj(b.subject).name;
+  const m=document.createElement("div");m.className="note";m.textContent=cap(fmtDayLong(hzSel.date))+" · "+b.start+"–"+b.end+(b.repeat?" · cada semana"+(b.until?" hasta el "+kd(b.until).getDate()+" "+MONTHS[kd(b.until).getMonth()]:""):"");
+  const acts=document.createElement("div");acts.className="actions";
+  const go=document.createElement("button");go.type="button";go.className="btn primary";go.textContent=state.config.active?"Ya hay una sesión en marcha":"Empezar";go.disabled=!!state.config.active;
+  go.addEventListener("click",()=>startFromBlock(b.subject));
+  const ed=document.createElement("button");ed.type="button";ed.className="btn";ed.textContent="Editar";ed.addEventListener("click",()=>openBlkForm(b));
+  const del=document.createElement("button");del.type="button";del.className="btn ghost danger";del.textContent="Borrar";
+  armButton(del,"Borrar",()=>b.repeat?"¿Borrar todas las semanas?":"¿Seguro? Pulsa otra vez",()=>{hz.blocks=hz.blocks.filter(x=>x.id!==b.id);hzSave();hzSel=null;renderHorario();});
+  const cl=document.createElement("button");cl.type="button";cl.className="btn ghost";cl.textContent="Cerrar";cl.addEventListener("click",()=>{hzSel=null;renderHzDetail();});
+  acts.append(go,ed,del,cl);box.append(t,m,acts);
+}
+function syncBlkForm(){$("bUntilLbl").hidden=!$("bRepeat").checked;}
+function openBlkForm(b,date,startMin){
+  hzEdit=b?b.id:null;$("hzFormPanel").hidden=false;$("hzFormTitle").textContent=b?"Editar bloque de estudio":"Nuevo bloque de estudio";
+  fillSubjSelect($("bSubj"),false,b&&b.subject);
+  $("bDate").value=b?b.date:(date||hzDay);
+  const s=b?toMin(b.start):(startMin!=null?startMin:17*60);
+  $("bStart").value=fromMin(s);$("bEnd").value=b?b.end:fromMin(Math.min(H1,s+60));
+  $("bRepeat").checked=!!(b&&b.repeat);$("bUntil").value=(b&&b.until)||"";$("bErr").hidden=true;
+  syncBlkForm();$("hzFormPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+$("bRepeat").addEventListener("change",syncBlkForm);
+$("bCancel").addEventListener("click",()=>{$("hzFormPanel").hidden=true;hzEdit=null;});
+$("hzAdd").addEventListener("click",()=>openBlkForm(null,hzDay,null));
+$("hzForm").addEventListener("submit",e=>{
+  e.preventDefault();const err=t=>{$("bErr").textContent=t;$("bErr").hidden=false;};
+  const subject=$("bSubj").value,date=$("bDate").value,start=$("bStart").value,end=$("bEnd").value;
+  if(!subject){err("Crea primero una asignatura en el registro de horas.");return;}
+  if(!date||!start||!end){err("Rellena el día, el inicio y el fin.");return;}
+  if(toMin(end)<=toMin(start)){err("El fin tiene que ser posterior al inicio.");return;}
+  const repeat=$("bRepeat").checked,until=repeat&&$("bUntil").value?$("bUntil").value:null;
+  if(until&&until<date){err("La fecha de fin de la repetición es anterior al bloque.");return;}
+  const data={subject,date,start,end,repeat,until};
+  if(hzEdit)hz.blocks=hz.blocks.map(x=>x.id===hzEdit?{...x,...data}:x);else{const id=uid();hz.blocks.push({id,...data});}
+  hzSave();$("hzFormPanel").hidden=true;hzEdit=null;hzDay=date;renderHorario();setSync("Bloque guardado");
+});
+function renderHzTotals(wk,wkEnd){
+  const box=$("hzTotals");box.textContent="";
+  const plan={},did={};
+  occOf(hz.blocks,wk,wkEnd).forEach(o=>{plan[o.ev.subject]=(plan[o.ev.subject]||0)+(toMin(o.ev.end)-toMin(o.ev.start))*60000;});
+  const a=kd(wk).getTime(),b=kd(addDays(wkEnd,1)).getTime();
+  allWithLive().forEach(s=>{if(s.start>=a&&s.start<b)did[s.subject]=(did[s.subject]||0)+dur(s);});
+  const ids=[...new Set([...Object.keys(plan),...Object.keys(did)])].sort((x,y)=>((plan[y]||0)+(did[y]||0))-((plan[x]||0)+(did[x]||0)));
+  if(!ids.length){const p=document.createElement("div");p.className="empty";p.textContent="Sin bloques planificados ni horas estudiadas esta semana.";box.append(p);return;}
+  ids.forEach(id=>{
+    const r=document.createElement("div");r.className="trow";const p=plan[id]||0,d=did[id]||0;
+    const top=document.createElement("div");top.className="top";const n=document.createElement("div");n.className="n";const i=document.createElement("i");i.style.background=color(id);n.append(i,document.createTextNode(subj(id).name));top.append(n);
+    const bar=document.createElement("div");bar.className="bar";const f=document.createElement("div");f.style.background=color(id);f.style.width=(p?Math.min(100,d/p*100):0)+"%";bar.append(f);
+    const nums=document.createElement("div");nums.className="nums";
+    const s1=document.createElement("span");s1.append("Planificado ");const b1=document.createElement("b");b1.textContent=hm(p);s1.append(b1);
+    const s2=document.createElement("span");s2.append("Estudiado ");const b2=document.createElement("b");b2.textContent=hm(d);s2.append(b2);
+    nums.append(s1,s2);r.append(top,bar,nums);box.append(r);
+  });
+}
+$("hzPrev").addEventListener("click",()=>{hzDay=addDays(hzDay,mqMobile.matches?-1:-7);renderHorario();});
+$("hzNext").addEventListener("click",()=>{hzDay=addDays(hzDay,mqMobile.matches?1:7);renderHorario();});
+$("hzToday").addEventListener("click",()=>{hzDay=dayKey(Date.now());renderHorario();});
+(()=>{let x0=null,y0=null;const el=$("hz");
+  el.addEventListener("touchstart",e=>{const t=e.touches[0];x0=t.clientX;y0=t.clientY;},{passive:true});
+  el.addEventListener("touchend",e=>{if(x0==null||!mqMobile.matches)return;const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){hzDay=addDays(hzDay,dx<0?1:-1);renderHorario();}},{passive:true});})();
+const onMq=()=>{if(curPage==="horario")renderHorario();};
+if(mqMobile.addEventListener)mqMobile.addEventListener("change",onMq);else if(mqMobile.addListener)mqMobile.addListener(onMq);
+
 /* ---------- menú de secciones ---------- */
 const PAGES={
   registro:{t:"Registro de horas",ready:true},
-  agenda:{t:"Agenda y recordatorios",soon:"Agenda del día con tus tareas, exámenes y recordatorios, organizada por fecha como un calendario."},
-  horario:{t:"Horario semanal",soon:"Tu horario de la semana (clases y bloques de estudio), cruzado con los eventos de la agenda."},
+  agenda:{t:"Agenda y recordatorios",ready:true},
+  horario:{t:"Horario semanal",ready:true},
   recursos:{t:"Recursos por asignatura",soon:"Un sitio por asignatura para guardar apuntes, enlaces, PDFs y boletines."},
   flashcards:{t:"Flashcards",soon:"Tarjetas de repaso que mezclan todas las asignaturas, en modo juego, para los ratos muertos."}
 };
@@ -767,12 +1543,17 @@ document.addEventListener("click",e=>{if(!$("menu").hidden&&!e.target.closest(".
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("menu").hidden){openMenu(false);$("menuBtn").focus();}});
 function route(){
   const id=(location.hash||"#registro").slice(1);const pg=PAGES[id]?id:"registro";const info=PAGES[pg];
+  curPage=pg;
   $("pageTitle").textContent=info.t;
   document.querySelectorAll("#menu a").forEach(a=>{if(a.dataset.page===pg)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});
-  $("page-registro").hidden=!info.ready;
+  $("page-registro").hidden=pg!=="registro";
+  $("page-agenda").hidden=pg!=="agenda";
+  $("page-horario").hidden=pg!=="horario";
   $("soon").hidden=!!info.ready;
   if(!info.ready){$("soonTitle").textContent=info.t+" · próximamente";$("soonText").textContent=info.soon;}
-  document.title=info.ready?document.title:info.t;
+  if(pg==="agenda")renderAgenda();
+  if(pg==="horario")renderHorario();
+  if(pg==="registro")tick();else document.title=info.t;
   openMenu(false);window.scrollTo(0,0);
 }
 window.addEventListener("hashchange",route);
@@ -780,6 +1561,11 @@ route();
 
 render();
 init();
+renderAlerts();
+setTimeout(checkReminders,400);
+setInterval(checkReminders,30000);
+setInterval(()=>{if(curPage==="horario"&&document.visibilityState==="visible")renderHorario();},60000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")checkReminders();});
 })();
 </script>
 
