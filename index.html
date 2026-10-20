@@ -349,6 +349,28 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .hznow::before{content:"";position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--run)}
 .detail{display:grid;gap:10px}
 .detail .t{font-family:var(--f-display);font-weight:700;font-size:1.15rem}
+
+/* Recursos */
+.rbar{display:flex;gap:8px;flex-wrap:wrap}
+.rbar input{flex:1 1 11em}
+.res{display:grid;grid-template-columns:4px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.res .bar4{width:4px;align-self:stretch;border-radius:2px}
+.res .t{font-weight:600;overflow-wrap:anywhere}
+.res .m{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.res .txt{font-size:.88rem;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:4px}
+.res .txt.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.res .actions{margin-top:8px;gap:6px}
+a.btn{text-decoration:none;display:inline-block}
+a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.note a{color:var(--accent)}
+.seg.wide{justify-self:start}
+.ghgrp{display:grid;gap:0}
+.ghgrp h3{font-size:.85rem;margin:8px 0 2px;display:flex;align-items:center;gap:8px}
+.ghgrp h3 i{width:10px;height:10px;border-radius:50%;flex:none}
+.ghfile{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.ghfile a{color:var(--accent);overflow-wrap:anywhere;min-width:0}
+.ghfile span{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);white-space:nowrap}
+.warn{color:var(--run)}
 </style>
 
 <div class="wrap">
@@ -581,6 +603,55 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
           </form>
         </section>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== Recursos por asignatura ===== -->
+  <div class="grid" id="page-recursos" hidden>
+    <div class="col">
+      <section class="panel" aria-label="Recursos">
+        <h2>Asignatura</h2>
+        <div class="chips" id="rcChips"></div>
+        <div class="rbar">
+          <input type="search" id="rcQ" placeholder="Buscar" aria-label="Buscar en los recursos">
+          <select id="rcTagF" aria-label="Filtrar por etiqueta"></select>
+        </div>
+        <div id="rcList"></div>
+        <div class="actions"><button class="btn primary" type="button" id="rcAdd">+ Recurso</button></div>
+      </section>
+      <section class="panel" id="rcFormPanel" hidden aria-label="Recurso">
+        <form class="manual" id="rcForm" novalidate>
+          <div class="fbhead wide" id="rcFormTitle">Nuevo recurso</div>
+          <div class="seg wide" id="rcKindSeg" role="group" aria-label="Tipo de recurso">
+            <button type="button" data-k="link">Enlace</button><button type="button" data-k="note">Nota</button><button type="button" data-k="file">Archivo</button>
+          </div>
+          <label class="wide">Título<input id="rTitle" maxlength="100" placeholder="Opcional en enlaces y archivos"></label>
+          <label>Asignatura<select id="rSubj"></select></label>
+          <label>Etiqueta<select id="rTag"></select></label>
+          <label class="wide" id="rUrlLbl">Enlace (URL)<input id="rUrl" type="url" inputmode="url" autocomplete="off" placeholder="https://…"></label>
+          <label class="wide" id="rTextLbl">Nota<textarea id="rText" rows="5"></textarea></label>
+          <label class="wide" id="rFileLbl">Archivo (PDF o imagen)<input id="rFile" type="file" accept="application/pdf,.pdf,image/*"></label>
+          <p class="note wide" id="rFileNote" hidden></p>
+          <div class="fberr wide" id="rErr" hidden></div>
+          <div class="actions wide">
+            <button class="btn primary" type="submit" id="rSave">Guardar</button>
+            <button class="btn ghost" type="button" id="rCancel">Cancelar</button>
+            <button class="btn ghost danger" type="button" id="rDelete" hidden>Borrar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div class="col">
+      <section class="panel" aria-label="Archivos en GitHub">
+        <h2>En GitHub · para flashcards</h2>
+        <p class="note">Para que se generen flashcards, el recurso tiene que subirse a la carpeta de su asignatura en <a href="https://github.com/Enrique2329/horas-estudio/tree/main/recursos" target="_blank" rel="noopener">recursos/ de GitHub</a>.</p>
+        <div id="ghList"></div>
+      </section>
+      <section class="panel" aria-label="Espacio en este móvil">
+        <h2>Espacio en este móvil</h2>
+        <p class="note" id="rcSpace"></p>
+        <p class="note">Los enlaces, notas y archivos se guardan solo en este móvil. "Exportar copia" (en el registro de horas) los incluye.</p>
+      </section>
     </div>
   </div>
 </div>
@@ -1135,11 +1206,21 @@ function renderLog(){
 setInterval(()=>{const a=state.config.active;if(a&&!a.endedAt){tick();if(Math.floor(liveMs()/1000)%30===0)renderStats();}},1000);
 
 /* ---------- app instalable: copia de seguridad y modo sin conexión ---------- */
-$("exportBtn").addEventListener("click",()=>{
-  const blob=new Blob([JSON.stringify({app:"horas-estudio",version:2,exportedAt:new Date().toISOString(),data:state,sections:{agenda:ag,horario:hz}},null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="horas-estudio-"+dayKey(Date.now())+".json";
-  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
-  $("backupMsg").textContent="Copia exportada.";
+$("exportBtn").addEventListener("click",async()=>{
+  const btn=$("exportBtn");btn.disabled=true;$("backupMsg").textContent="Preparando copia…";
+  try{
+    // Los archivos de Recursos (IndexedDB) van dentro de la copia en base64
+    const files={};let missing=0;
+    for(const it of rc.items.filter(i=>i.kind==="file")){
+      try{const v=await fGet(it.id);if(v&&v.buf)files[it.id]={type:v.type||it.mime||"",name:v.name||it.fileName||"",data:await bufToB64(v.buf)};else missing++;}catch(e){missing++;}
+    }
+    const blob=new Blob([JSON.stringify({app:"horas-estudio",version:3,exportedAt:new Date().toISOString(),data:state,
+      sections:{agenda:ag,horario:hz,recursos:{items:rc.items,files}}},null,2)],{type:"application/json"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="horas-estudio-"+dayKey(Date.now())+".json";
+    document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),10000);
+    $("backupMsg").textContent="Copia exportada ("+bytes(blob.size)+")."+(missing?" "+missing+" archivo(s) de Recursos no se pudieron leer y no van incluidos.":"");
+  }catch(e){$("backupMsg").textContent="No se pudo preparar la copia.";}
+  btn.disabled=false;
 });
 $("importFile").addEventListener("change",async e=>{
   const f=e.target.files[0];if(!f)return;
@@ -1150,7 +1231,14 @@ $("importFile").addEventListener("change",async e=>{
     const sec=j.sections||{};let extra="";
     if(sec.agenda&&Array.isArray(sec.agenda.events)){ag={events:sec.agenda.events,fired:sec.agenda.fired||{},alerts:[]};agSave();extra+=", "+ag.events.length+" eventos";}
     if(sec.horario&&Array.isArray(sec.horario.blocks)){hz={blocks:sec.horario.blocks};hzSave();extra+=", "+hz.blocks.length+" bloques de estudio";}
-    render();renderAlerts();
+    if(sec.recursos&&Array.isArray(sec.recursos.items)){
+      const fs=sec.recursos.files&&typeof sec.recursos.files==="object"?sec.recursos.files:{};let bad=0;
+      Object.keys(rUrls).forEach(dropUrl);
+      try{await fClear();}catch(_){}
+      for(const id of Object.keys(fs)){try{await fPut(id,{type:fs[id].type||"",name:fs[id].name||"",buf:b64ToBuf(fs[id].data)});}catch(_){bad++;}}
+      rc={items:sec.recursos.items};rcSave();extra+=", "+rc.items.length+" recursos"+(bad?" ("+bad+" archivos no cupieron)":"");
+    }
+    render();renderAlerts();if(curPage==="recursos")renderRecursos();
     $("backupMsg").textContent="Copia importada: "+d.sessions.length+" sesiones"+extra+".";
   }catch(err){$("backupMsg").textContent="Ese archivo no es una copia válida de Horas de estudio.";}
   e.target.value="";
@@ -1528,12 +1616,211 @@ $("hzToday").addEventListener("click",()=>{hzDay=dayKey(Date.now());renderHorari
 const onMq=()=>{if(curPage==="horario")renderHorario();};
 if(mqMobile.addEventListener)mqMobile.addEventListener("change",onMq);else if(mqMobile.addListener)mqMobile.addListener(onMq);
 
+/* ---------- Recursos por asignatura ---------- */
+const RKEY="he-recursos-v1";
+const RTAGS=["Apuntes","Boletín","Examen anterior","Vídeo","Otro"];
+const GH_TREE="https://github.com/Enrique2329/horas-estudio/tree/main/recursos";
+let rc={items:[]};
+function rcLoad(){try{const d=JSON.parse(localStorage.getItem(RKEY)||"null");if(d&&Array.isArray(d.items))rc={items:d.items};}catch(e){}}
+function rcSave(){try{localStorage.setItem(RKEY,JSON.stringify(rc));return true;}catch(e){return false;}}
+rcLoad();
+/* Archivos en IndexedDB: clave = id del recurso, valor = {type,name,buf:ArrayBuffer} */
+let rdbP=null;
+function rdb(){
+  if(!rdbP){rdbP=new Promise((res,rej)=>{try{const r=indexedDB.open("he-recursos",1);
+    r.onupgradeneeded=()=>r.result.createObjectStore("files");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});
+    rdbP.catch(()=>{rdbP=null;});}
+  return rdbP;
+}
+function idb(mode,fn){return rdb().then(db=>new Promise((res,rej)=>{const tx=db.transaction("files",mode);let out;const r=fn(tx.objectStore("files"));
+  if(r)r.onsuccess=()=>{out=r.result;};tx.oncomplete=()=>res(out);tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error||new Error("abort"));}));}
+const fPut=(id,v)=>idb("readwrite",st=>st.put(v,id));
+const fGet=id=>idb("readonly",st=>st.get(id));
+const fDel=id=>idb("readwrite",st=>st.delete(id));
+const fClear=()=>idb("readwrite",st=>st.clear());
+const rUrls={};
+async function fileUrl(it){if(rUrls[it.id])return rUrls[it.id];const v=await fGet(it.id);if(!v||!v.buf)return null;
+  return rUrls[it.id]=URL.createObjectURL(new Blob([v.buf],{type:v.type||it.mime||""}));}
+function dropUrl(id){if(rUrls[id]){URL.revokeObjectURL(rUrls[id]);delete rUrls[id];}}
+function bytes(n){n=n||0;if(n<1048576)return Math.max(1,Math.round(n/1024))+" KB";const f=(x,d)=>x.toLocaleString("es-ES",{maximumFractionDigits:d});
+  return n<1073741824?f(n/1048576,1)+" MB":f(n/1073741824,1)+" GB";}
+function norm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();}
+function bufToB64(buf){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]||"");fr.onerror=()=>rej(fr.error);fr.readAsDataURL(new Blob([buf]));});}
+function b64ToBuf(s){const bin=atob(s||"");const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer;}
+function kindTxt(it){
+  if(it.kind==="link"){try{return "Enlace · "+new URL(it.url).hostname.replace(/^www\./,"");}catch(e){return "Enlace";}}
+  if(it.kind==="note")return "Nota";
+  return (/pdf/i.test(it.mime||"")||/\.pdf$/i.test(it.fileName||"")?"PDF":"Imagen")+" · "+bytes(it.size);
+}
+let rcSubj=null,rcQ="",rcTag="",rcEdit=null,rcKind="link";
+const rcOpen=new Set();
+function rcSubjects(){const used=new Set(rc.items.map(i=>i.subject));return state.config.subjects.filter(s=>!s.archived||used.has(s.id));}
+function renderRecursos(){
+  const subs=rcSubjects();
+  if(rcSubj!=="*"&&!subs.some(s=>s.id===rcSubj))rcSubj=subs.some(s=>s.id===state.config.selected)?state.config.selected:(subs[0]?subs[0].id:"*");
+  renderRcChips(subs);renderRcList();renderGh();renderRcSpace();
+}
+function renderRcChips(subs){
+  const box=$("rcChips");box.textContent="";
+  const mk=(id,name,n,dot)=>{const b=document.createElement("button");b.type="button";b.className="chip";b.setAttribute("aria-pressed",String(rcSubj===id));
+    if(dot){const i=document.createElement("i");i.style.background=dot;b.append(i);}
+    b.append(document.createTextNode(name+(n?" · "+n:"")));b.addEventListener("click",()=>{rcSubj=id;renderRecursos();});box.append(b);};
+  mk("*","Todas",rc.items.length,null);
+  subs.forEach(s=>mk(s.id,s.name,rc.items.filter(i=>i.subject===s.id).length,color(s.id)));
+  const sel=$("rcTagF");if(!sel.options.length){[["","Todas las etiquetas"],...RTAGS.map(t=>[t,t])].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;sel.append(o);});}
+  sel.value=rcTag;
+}
+function rcMatches(text){const q=norm(rcQ);return !q||norm(text).includes(q);}
+function renderRcList(){
+  const box=$("rcList");box.textContent="";
+  const L=rc.items.filter(it=>(rcSubj==="*"||it.subject===rcSubj)&&(!rcTag||it.tag===rcTag)&&rcMatches([it.title,it.text,it.url,it.fileName,it.tag].join(" ")))
+    .sort((a,b)=>(b.created||0)-(a.created||0));
+  if(!L.length){const p=document.createElement("div");p.className="empty";
+    p.textContent=rc.items.length&&(rcQ||rcTag)?"Nada coincide con la búsqueda o el filtro.":"Aún no hay recursos aquí. Pulsa + Recurso para guardar un enlace, una nota o un PDF.";box.append(p);return;}
+  L.forEach(it=>{
+    const r=document.createElement("div");r.className="res";
+    const bar=document.createElement("span");bar.className="bar4";bar.style.background=color(it.subject);
+    const body=document.createElement("div");body.style.minWidth="0";
+    const t=document.createElement("div");t.className="t";t.textContent=it.title;
+    const m=document.createElement("div");m.className="m";const bd=document.createElement("span");bd.className="badge";bd.textContent=it.tag||"Otro";
+    m.append(bd,document.createTextNode(kindTxt(it)+(rcSubj==="*"?" · "+subj(it.subject).name:"")));
+    body.append(t,m);
+    const acts=document.createElement("div");acts.className="actions";
+    if(it.kind==="note"){
+      const tx=document.createElement("div");tx.className="txt";tx.textContent=it.text||"";body.append(tx);
+      const long=(it.text||"").length>180||(it.text||"").split("\n").length>3;
+      if(long){const open=rcOpen.has(it.id);if(!open)tx.classList.add("clamp");
+        const b=document.createElement("button");b.type="button";b.className="btn sm";b.textContent=open?"Ver menos":"Ver todo";
+        b.addEventListener("click",()=>{if(rcOpen.has(it.id))rcOpen.delete(it.id);else rcOpen.add(it.id);renderRcList();});acts.append(b);}
+    }else{
+      const a=document.createElement("a");a.className="btn sm";a.textContent="Abrir";a.target="_blank";a.rel="noopener noreferrer";
+      if(it.kind==="link")a.href=it.url;
+      else{a.setAttribute("aria-disabled","true");a.href="#";
+        fileUrl(it).then(u=>{if(u){a.href=u;a.removeAttribute("aria-disabled");}else{a.textContent="Archivo no encontrado";a.removeAttribute("target");}})
+          .catch(()=>{a.textContent="No se puede abrir";});}
+      acts.append(a);
+    }
+    const ed=document.createElement("button");ed.type="button";ed.className="btn ghost sm";ed.textContent="Editar";ed.setAttribute("aria-label","Editar "+it.title);
+    ed.addEventListener("click",()=>openRcForm(it));acts.append(ed);
+    body.append(acts);r.append(bar,body);box.append(r);
+  });
+}
+/* Archivos del repositorio (recursos/indice.json, lo mantiene la tarea diaria) */
+let gh={st:"loading",data:null};
+function loadIndice(){
+  fetch("recursos/indice.json",{cache:"no-cache"})
+    .then(r=>r.status===404?{}:(r.ok?r.json():Promise.reject(new Error(r.status))))
+    .then(d=>{gh={st:"ok",data:d&&typeof d==="object"&&!Array.isArray(d)?d:{}};})
+    .catch(()=>{gh={st:"err",data:null};})
+    .then(()=>{if(curPage==="recursos")renderGh();});
+}
+function renderGh(){
+  const box=$("ghList");box.textContent="";
+  const msg=t=>{const p=document.createElement("div");p.className="empty";p.textContent=t;box.append(p);};
+  if(gh.st==="loading"){msg("Cargando…");return;}
+  if(gh.st==="err"){msg("No se ha podido leer la lista de archivos (hace falta conexión la primera vez).");return;}
+  const subs=rcSubjects();
+  let keys=Object.keys(gh.data);
+  if(rcSubj!=="*"){const s=subj(rcSubj);keys=keys.filter(k=>norm(k)===norm(s.name));if(!keys.length)keys=[s.name];}
+  if(!keys.length){msg("Todavía no hay archivos subidos.");return;}
+  keys.forEach(k=>{
+    const files=(Array.isArray(gh.data[k])?gh.data[k]:[]).filter(f=>f&&f.path&&rcMatches((f.name||"")+" "+f.path));
+    const g=document.createElement("div");g.className="ghgrp";
+    const h=document.createElement("h3");const s=subs.find(x=>norm(x.name)===norm(k));
+    if(s){const i=document.createElement("i");i.style.background=color(s.id);h.append(i);}
+    h.append(document.createTextNode(k));g.append(h);
+    if(!files.length){const p=document.createElement("div");p.className="empty";p.append("Sin archivos"+(rcQ?" que coincidan":"")+" en ");
+      const a=document.createElement("a");a.href=GH_TREE+"/"+encodeURIComponent(k);a.target="_blank";a.rel="noopener";a.textContent="recursos/"+k+"/";a.style.color="var(--accent)";p.append(a,".");g.append(p);}
+    files.forEach(f=>{const row=document.createElement("div");row.className="ghfile";
+      const a=document.createElement("a");a.href=f.path.split("/").map(encodeURIComponent).join("/");a.target="_blank";a.rel="noopener";a.textContent=f.name||f.path.split("/").pop();
+      const sz=document.createElement("span");sz.textContent=typeof f.size==="number"?bytes(f.size):"";row.append(a,sz);g.append(row);});
+    box.append(g);
+  });
+}
+async function renderRcSpace(){
+  const box=$("rcSpace");const files=rc.items.filter(i=>i.kind==="file");const tot=files.reduce((s,i)=>s+(i.size||0),0);
+  let t=files.length?"Archivos guardados: "+files.length+" ("+bytes(tot)+").":"No hay archivos guardados.",warn=false;
+  try{const e=navigator.storage&&navigator.storage.estimate?await navigator.storage.estimate():null;
+    if(e&&e.quota){t+=" La app ocupa "+bytes(e.usage)+" de "+bytes(e.quota)+" disponibles.";warn=e.usage/e.quota>.8;if(warn)t+=" Queda poco espacio.";}}catch(x){}
+  box.textContent=t;box.classList.toggle("warn",warn);
+}
+function syncRcForm(){
+  $("rcKindSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===rcKind)));
+  $("rUrlLbl").hidden=rcKind!=="link";$("rTextLbl").hidden=rcKind!=="note";$("rFileLbl").hidden=rcKind!=="file";
+  $("rTitle").placeholder=rcKind==="note"?"Opcional: si lo dejas vacío se usa la primera línea":"Opcional";
+  const it=rcEdit&&rc.items.find(x=>x.id===rcEdit),fn=$("rFileNote");
+  if(rcKind==="file"){const f=$("rFile").files[0];
+    fn.textContent=f?f.name+" · "+bytes(f.size)+(f.size>20*1048576?" · archivo grande: ocupa bastante espacio en el móvil":""):(it&&it.kind==="file"?"Archivo actual: "+it.fileName+" · "+bytes(it.size)+". Elige otro solo si quieres sustituirlo.":"");
+    fn.hidden=!fn.textContent;}
+  else fn.hidden=true;
+}
+function openRcForm(it){
+  rcEdit=it?it.id:null;$("rcFormPanel").hidden=false;$("rcFormTitle").textContent=it?"Editar recurso":"Nuevo recurso";
+  rcKind=it?it.kind:rcKind;$("rcKindSeg").hidden=!!it;
+  $("rTitle").value=it?it.title:"";$("rUrl").value=it&&it.url||"";$("rText").value=it&&it.text||"";$("rFile").value="";
+  fillSubjSelect($("rSubj"),false,it?it.subject:(rcSubj!=="*"?rcSubj:null));
+  const tg=$("rTag");if(!tg.options.length)RTAGS.forEach(t=>{const o=document.createElement("option");o.textContent=t;tg.append(o);});
+  tg.value=it?(it.tag||"Otro"):"Apuntes";
+  $("rDelete").hidden=!it;$("rDelete").textContent="Borrar";$("rErr").hidden=true;$("rSave").disabled=false;
+  syncRcForm();$("rcFormPanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function closeRcForm(){$("rcFormPanel").hidden=true;rcEdit=null;}
+$("rcKindSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;rcKind=b.dataset.k;$("rErr").hidden=true;syncRcForm();});
+$("rFile").addEventListener("change",syncRcForm);
+$("rcAdd").addEventListener("click",()=>openRcForm(null));
+$("rCancel").addEventListener("click",closeRcForm);
+$("rcQ").addEventListener("input",e=>{rcQ=e.target.value;renderRcList();renderGh();});
+$("rcTagF").addEventListener("change",e=>{rcTag=e.target.value;renderRcList();});
+armButton($("rDelete"),"Borrar",()=>"¿Seguro? Pulsa otra vez",()=>{
+  const it=rc.items.find(x=>x.id===rcEdit);if(!it)return closeRcForm();
+  rc.items=rc.items.filter(x=>x.id!==it.id);rcSave();
+  if(it.kind==="file"){dropUrl(it.id);fDel(it.id).catch(()=>{});}
+  closeRcForm();renderRecursos();setSync("Recurso borrado");
+});
+$("rcForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const err=t=>{$("rErr").textContent=t;$("rErr").hidden=false;$("rSave").disabled=false;};
+  $("rErr").hidden=true;
+  const subject=$("rSubj").value,tag=$("rTag").value||"Otro";let title=$("rTitle").value.trim();
+  if(!subject)return err("Crea primero una asignatura en el registro de horas.");
+  const old=rcEdit?rc.items.find(x=>x.id===rcEdit):null;
+  const id=old?old.id:uid();
+  const it={id,created:old?old.created:Date.now(),subject,tag,kind:rcKind,title:""};
+  if(rcKind==="link"){
+    let u=$("rUrl").value.trim();if(!u)return err("Pega el enlace.");
+    if(!/^[a-z][a-z0-9+.-]*:/i.test(u))u="https://"+u;
+    let x;try{x=new URL(u);if(!/^https?:$/.test(x.protocol)||!x.hostname.includes("."))throw 0;}catch(_){return err("Ese enlace no parece válido.");}
+    it.url=x.href;title=title||x.hostname.replace(/^www\./,"");
+  }else if(rcKind==="note"){
+    const tx=$("rText").value.replace(/\s+$/,"");if(!tx.trim())return err("Escribe la nota.");
+    it.text=tx;title=title||tx.trim().split("\n")[0].slice(0,80);
+  }else{
+    const f=$("rFile").files[0];
+    if(!f&&!(old&&old.kind==="file"))return err("Elige un archivo.");
+    if(f){
+      if(!/^(application\/pdf|image\/)/.test(f.type)&&!/\.pdf$/i.test(f.name))return err("Solo se pueden guardar PDF o imágenes.");
+      $("rSave").disabled=true;
+      try{const est=navigator.storage&&navigator.storage.estimate?await navigator.storage.estimate():null;
+        if(est&&est.quota&&(est.usage||0)+f.size*1.1>est.quota)return err("No queda espacio suficiente en el móvil para este archivo.");}catch(_){}
+      try{await fPut(id,{type:f.type||"application/pdf",name:f.name,buf:await f.arrayBuffer()});}
+      catch(_){return err("No se pudo guardar el archivo en este móvil (puede que no quede espacio o que el navegador no lo permita).");}
+      dropUrl(id);it.fileName=f.name;it.mime=f.type||"application/pdf";it.size=f.size;
+    }else{it.fileName=old.fileName;it.mime=old.mime;it.size=old.size;}
+    title=title||it.fileName.replace(/\.[^.]+$/,"");
+  }
+  it.title=title;
+  const prev=rc.items;
+  rc.items=old?rc.items.map(x=>x.id===id?it:x):[...rc.items,it];
+  if(!rcSave()){rc.items=prev;if(rcKind==="file"&&!old)fDel(id).catch(()=>{});return err("No se pudo guardar: el almacenamiento del navegador está lleno.");}
+  rcSubj=subject;closeRcForm();renderRecursos();setSync("Recurso guardado");
+});
+
 /* ---------- menú de secciones ---------- */
 const PAGES={
   registro:{t:"Registro de horas",ready:true},
   agenda:{t:"Agenda y recordatorios",ready:true},
   horario:{t:"Horario semanal",ready:true},
-  recursos:{t:"Recursos por asignatura",soon:"Un sitio por asignatura para guardar apuntes, enlaces, PDFs y boletines."},
+  recursos:{t:"Recursos por asignatura",ready:true},
   flashcards:{t:"Flashcards",soon:"Tarjetas de repaso que mezclan todas las asignaturas, en modo juego, para los ratos muertos."}
 };
 document.querySelectorAll("#menu a").forEach(a=>{if(!PAGES[a.dataset.page].ready){const t=document.createElement("span");t.className="tag";t.textContent="Próximamente";a.append(t);}});
@@ -1549,10 +1836,12 @@ function route(){
   $("page-registro").hidden=pg!=="registro";
   $("page-agenda").hidden=pg!=="agenda";
   $("page-horario").hidden=pg!=="horario";
+  $("page-recursos").hidden=pg!=="recursos";
   $("soon").hidden=!!info.ready;
   if(!info.ready){$("soonTitle").textContent=info.t+" · próximamente";$("soonText").textContent=info.soon;}
   if(pg==="agenda")renderAgenda();
   if(pg==="horario")renderHorario();
+  if(pg==="recursos"){renderRecursos();if(gh.st!=="ok")loadIndice();}
   if(pg==="registro")tick();else document.title=info.t;
   openMenu(false);window.scrollTo(0,0);
 }

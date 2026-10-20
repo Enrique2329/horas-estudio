@@ -5,7 +5,7 @@ Una fase por día. Cada fase marcada `[x]` ya está publicada. La siguiente a im
 - [x] Fase 0 — Menú desplegable de secciones; el contador pasa a "Registro de horas" (19 oct 2026)
 - [x] Fase 1 — Agenda y recordatorios, descansos, aprovechamiento y gráficas mes/cuatrimestre (20 oct 2026)
 - [x] Fase 2 — Horario semanal (20 oct 2026)
-- [ ] Fase 3 — Recursos por asignatura
+- [x] Fase 3 — Recursos por asignatura (20 oct 2026)
 - [ ] Fase 4 — Flashcards
 
 ## Especificación de cada fase
