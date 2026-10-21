@@ -353,6 +353,7 @@ textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* Recursos */
 .rbar{display:flex;gap:8px;flex-wrap:wrap}
 .rbar input{flex:1 1 11em}
+.rbar .tog input{flex:none}
 .res{display:grid;grid-template-columns:4px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .res .bar4{width:4px;align-self:stretch;border-radius:2px}
 .res .t{font-weight:600;overflow-wrap:anywhere}
@@ -371,6 +372,33 @@ a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
 .ghfile a{color:var(--accent);overflow-wrap:anywhere;min-width:0}
 .ghfile span{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);white-space:nowrap}
 .warn{color:var(--run)}
+/* Flashcards */
+.fcmeta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.fcmeta b{font-family:var(--f-mono);color:var(--ink);font-weight:600}
+.fcard{border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:18px 16px;min-height:170px;display:grid;align-content:center;gap:10px;cursor:pointer;text-align:left;color:var(--ink);font:inherit;width:100%}
+.fcard:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fcard .sub{font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.fcard .sub i{width:9px;height:9px;border-radius:50%;flex:none}
+.fcard .q{font-family:var(--f-display);font-weight:700;font-size:1.2rem;line-height:1.3;white-space:pre-wrap;overflow-wrap:anywhere}
+.fcard .a{border-top:1px dashed var(--line);padding-top:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:1rem}
+.fcard .hint{font-size:.8rem;color:var(--muted)}
+.fcans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fcans .btn{min-width:0}
+.fcgain{font-family:var(--f-mono);font-size:.85rem;color:var(--accent);min-height:1.3em}
+.fcend{display:grid;gap:6px;font-size:.95rem}
+.fcend b{font-family:var(--f-mono)}
+.fcrow{display:grid;grid-template-columns:4px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.fcrow .bar4{width:4px;align-self:stretch;border-radius:2px}
+.fcrow .f{font-weight:600;white-space:pre-wrap;overflow-wrap:anywhere}
+.fcrow .b{font-size:.88rem;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px}
+.fcrow .m{font-size:.75rem;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+.fcrow.off{opacity:.55}
+.fcrow .actions{margin-top:6px;gap:6px}
+.boxes{display:inline-flex;gap:2px;vertical-align:middle;margin-right:6px}
+.boxes span{width:7px;height:7px;border-radius:2px;border:1px solid var(--line)}
+.boxes span.on{background:var(--accent);border-color:var(--accent)}
+.fcform textarea{min-height:5em}
+#fcStats{display:grid;gap:14px}
 </style>
 
 <div class="wrap">
@@ -651,6 +679,65 @@ a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
         <h2>Espacio en este móvil</h2>
         <p class="note" id="rcSpace"></p>
         <p class="note">Los enlaces, notas y archivos se guardan solo en este móvil. "Exportar copia" (en el registro de horas) los incluye.</p>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===== Flashcards ===== -->
+  <div class="grid" id="page-flashcards" hidden>
+    <div class="col">
+      <section class="panel" id="fcPlayPanel" aria-label="Jugar">
+        <h2>Jugar</h2>
+        <div class="chips" id="fcPlayChips" role="group" aria-label="Asignaturas del juego"></div>
+        <p class="note" id="fcPlayInfo"></p>
+        <div class="actions">
+          <button class="btn primary" type="button" id="fcShort">Sesión corta · 10</button>
+          <button class="btn" type="button" id="fcDue">Repasar pendientes</button>
+        </div>
+        <div class="fberr" id="fcPlayErr" hidden></div>
+      </section>
+      <section class="panel" id="fcGamePanel" hidden aria-label="Partida">
+        <div class="fcmeta"><span>Tarjeta <b id="fcPos">1/10</b></span><span>Racha <b id="fcStreak">0</b></span><span>Puntos <b id="fcPts">0</b></span></div>
+        <div id="fcStage"></div>
+        <div class="fcgain" id="fcGain" aria-live="polite"></div>
+        <div class="actions"><button class="btn ghost sm" type="button" id="fcQuit">Terminar ahora</button></div>
+      </section>
+      <section class="panel" aria-label="Mazos">
+        <h2>Mazos</h2>
+        <div class="chips" id="fcDeckChips"></div>
+        <div class="rbar">
+          <input type="search" id="fcQ" placeholder="Buscar" aria-label="Buscar en las tarjetas">
+          <label class="tog"><input type="checkbox" id="fcShowHidden"> Ver ocultas</label>
+        </div>
+        <div id="fcList"></div>
+        <div class="actions"><button class="btn primary" type="button" id="fcAdd">+ Tarjeta</button></div>
+      </section>
+      <section class="panel" id="fcFormPanel" hidden aria-label="Tarjeta">
+        <form class="manual fcform" id="fcForm" novalidate>
+          <div class="fbhead wide" id="fcFormTitle">Nueva tarjeta</div>
+          <label class="wide">Asignatura<select id="fSubj"></select></label>
+          <label class="wide">Anverso (pregunta)<textarea id="fFront" rows="3" maxlength="1000"></textarea></label>
+          <label class="wide">Reverso (respuesta)<textarea id="fBack" rows="4" maxlength="2000"></textarea></label>
+          <div class="fberr wide" id="fErr" hidden></div>
+          <div class="actions wide">
+            <button class="btn primary" type="submit">Guardar</button>
+            <button class="btn ghost" type="button" id="fCancel">Cancelar</button>
+            <button class="btn ghost danger" type="button" id="fDelete" hidden>Borrar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div class="col">
+      <section class="panel" aria-label="Estadísticas de tarjetas">
+        <h2>Dominadas por asignatura</h2>
+        <div id="fcStats"></div>
+        <div class="fcmeta" id="fcTotals"></div>
+        <p class="note">Una tarjeta está dominada cuando llega a la caja 5. Cada acierto la sube una caja y vuelve a salir más tarde (1, 3, 7 y 14 días); un fallo la devuelve a la caja 1.</p>
+      </section>
+      <section class="panel" aria-label="Tarjetas generadas por Claude">
+        <h2>Tarjetas de Claude</h2>
+        <p class="note" id="fcRemoteSt">Cargando…</p>
+        <p class="note">Se generan cada día a partir de los archivos subidos a <a href="https://github.com/Enrique2329/horas-estudio/tree/main/recursos" target="_blank" rel="noopener">recursos/ de GitHub</a>. No se pueden editar, solo ocultar. Tu progreso y tus tarjetas se guardan en este móvil y van en "Exportar copia".</p>
       </section>
     </div>
   </div>
@@ -1214,8 +1301,8 @@ $("exportBtn").addEventListener("click",async()=>{
     for(const it of rc.items.filter(i=>i.kind==="file")){
       try{const v=await fGet(it.id);if(v&&v.buf)files[it.id]={type:v.type||it.mime||"",name:v.name||it.fileName||"",data:await bufToB64(v.buf)};else missing++;}catch(e){missing++;}
     }
-    const blob=new Blob([JSON.stringify({app:"horas-estudio",version:3,exportedAt:new Date().toISOString(),data:state,
-      sections:{agenda:ag,horario:hz,recursos:{items:rc.items,files}}},null,2)],{type:"application/json"});
+    const blob=new Blob([JSON.stringify({app:"horas-estudio",version:4,exportedAt:new Date().toISOString(),data:state,
+      sections:{agenda:ag,horario:hz,recursos:{items:rc.items,files},flashcards:{own:fc.own,prog:fc.prog,hidden:fc.hidden,stats:fc.stats}}},null,2)],{type:"application/json"});
     const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="horas-estudio-"+dayKey(Date.now())+".json";
     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),10000);
     $("backupMsg").textContent="Copia exportada ("+bytes(blob.size)+")."+(missing?" "+missing+" archivo(s) de Recursos no se pudieron leer y no van incluidos.":"");
@@ -1238,7 +1325,8 @@ $("importFile").addEventListener("change",async e=>{
       for(const id of Object.keys(fs)){try{await fPut(id,{type:fs[id].type||"",name:fs[id].name||"",buf:b64ToBuf(fs[id].data)});}catch(_){bad++;}}
       rc={items:sec.recursos.items};rcSave();extra+=", "+rc.items.length+" recursos"+(bad?" ("+bad+" archivos no cupieron)":"");
     }
-    render();renderAlerts();if(curPage==="recursos")renderRecursos();
+    if(sec.flashcards&&Array.isArray(sec.flashcards.own)){fcSet(sec.flashcards,false);fcGame=null;fcSave();extra+=", "+fc.own.length+" tarjetas propias";}
+    render();renderAlerts();if(curPage==="recursos")renderRecursos();if(curPage==="flashcards")renderFlashcards();
     $("backupMsg").textContent="Copia importada: "+d.sessions.length+" sesiones"+extra+".";
   }catch(err){$("backupMsg").textContent="Ese archivo no es una copia válida de Horas de estudio.";}
   e.target.value="";
@@ -1815,13 +1903,223 @@ $("rcForm").addEventListener("submit",async e=>{
   rcSubj=subject;closeRcForm();renderRecursos();setSync("Recurso guardado");
 });
 
+/* ---------- Flashcards ---------- */
+/* he-flashcards-v1: {own:[{id,subject,front,back,created}], prog:{id:{box,ok,ko,next,last}}, hidden:{id:1}, stats:{points,best,day,today},
+   remote:{updated,cards,at}} — `remote` es la última copia de flashcards.json (no va en la copia de seguridad). */
+const FKEY="he-flashcards-v1";
+const FC_GAP=[0,0,1,3,7,14]; // días hasta volver a salir según la caja (1–5)
+let fc={own:[],prog:{},hidden:{},stats:{points:0,best:0,day:"",today:0},remote:null};
+function fcLoad(){try{const d=JSON.parse(localStorage.getItem(FKEY)||"null");if(d&&typeof d==="object")fcSet(d,true);}catch(e){}}
+function fcSet(d,keepRemote){
+  fc={own:Array.isArray(d.own)?d.own.filter(c=>c&&c.id):[],prog:d.prog&&typeof d.prog==="object"?d.prog:{},hidden:d.hidden&&typeof d.hidden==="object"?d.hidden:{},
+    stats:Object.assign({points:0,best:0,day:"",today:0},d.stats||{}),remote:keepRemote?(d.remote||null):fc.remote};
+}
+function fcSave(){try{localStorage.setItem(FKEY,JSON.stringify(fc));return true;}catch(e){return false;}}
+fcLoad();
+let fcRemoteSt=fc.remote?"cache":"loading";
+function validRemote(j){return j&&Array.isArray(j.cards)?j.cards.filter(c=>c&&typeof c.id==="string"&&typeof c.front==="string"&&typeof c.back==="string"):null;}
+function loadFlashcards(){
+  fetch("flashcards.json",{cache:"no-cache"})
+    .then(r=>r.status===404?{cards:[]}:(r.ok?r.json():Promise.reject(new Error(r.status))))
+    .then(j=>{const cards=validRemote(j);if(!cards)throw new Error("formato");
+      fc.remote={updated:j.updated||"",cards,at:Date.now()};
+      fcSave();fcRemoteSt="ok";})
+    .catch(()=>{fcRemoteSt=fc.remote?"cache":"err";})
+    .then(()=>{if(curPage==="flashcards")renderFlashcards();});
+}
+/* Mazo de una tarjeta: id de la asignatura del registro (por nombre, sin mayúsculas ni tildes) o "n:<nombre>" si no existe */
+const fcNames={}; // nombre visible de los mazos sin asignatura en el registro
+function deckOfName(name){name=String(name||"").trim()||"Sin asignatura";const s=state.config.subjects.find(x=>norm(x.name)===norm(name));if(s)return s.id;
+  const k="n:"+norm(name);if(!fcNames[k]||fcNames[k]===fcNames[k].toLowerCase())fcNames[k]=name;return k;}
+function deckName(k){return k.startsWith("n:")?(fcNames[k]||k.slice(2)):subj(k).name;}
+function deckColor(k){return k.startsWith("n:")?"var(--muted)":color(k);}
+function fcAll(){
+  const r=(fc.remote&&fc.remote.cards||[]).map(c=>({id:c.id,deck:deckOfName(c.subject),front:c.front,back:c.back,source:c.source||"",claude:true}));
+  const ids=new Set(r.map(c=>c.id));
+  const o=fc.own.filter(c=>!ids.has(c.id)).map(c=>({id:c.id,deck:c.subject||deckOfName(""),front:c.front,back:c.back,claude:false,created:c.created}));
+  return r.concat(o);
+}
+function fcVisible(){return fcAll().filter(c=>!(c.claude&&fc.hidden[c.id]));}
+function fcBox(id){const p=fc.prog[id];return p&&p.box>=1&&p.box<=5?p.box:1;}
+function fcDueOn(id,today){const p=fc.prog[id];return !p||!p.next||p.next<=today;}
+function fcDecks(cards){
+  const ks=new Set(cards.map(c=>c.deck));
+  const order=state.config.subjects.filter(s=>!s.archived||ks.has(s.id)).map(s=>s.id);
+  ks.forEach(k=>{if(!order.includes(k))order.push(k);});
+  return order;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let fcPlay=new Set(),fcDeck="*",fcQ="",fcShowHidden=false,fcEdit=null,fcLimit=40,fcGame=null;
+function renderFlashcards(){
+  const all=fcAll(),vis=all.filter(c=>!(c.claude&&fc.hidden[c.id]));const decks=fcDecks(all);
+  fcPlay.forEach(k=>{if(!decks.includes(k))fcPlay.delete(k);});
+  if(fcDeck!=="*"&&!decks.includes(fcDeck))fcDeck="*";
+  renderFcPlay(vis,decks);renderFcDecks(all,decks);renderFcList(all);renderFcStats(vis,decks);renderFcRemote();renderFcGame();
+}
+function chipBtn(box,label,pressed,dot,fn){const b=document.createElement("button");b.type="button";b.className="chip";b.setAttribute("aria-pressed",String(pressed));
+  if(dot){const i=document.createElement("i");i.style.background=dot;b.append(i);}b.append(document.createTextNode(label));b.addEventListener("click",fn);box.append(b);}
+function fcPool(vis){return vis.filter(c=>!fcPlay.size||fcPlay.has(c.deck));}
+function renderFcPlay(vis,decks){
+  const box=$("fcPlayChips");box.textContent="";
+  chipBtn(box,"Todas",!fcPlay.size,null,()=>{fcPlay.clear();renderFlashcards();});
+  decks.forEach(k=>{const n=vis.filter(c=>c.deck===k).length;if(!n)return;
+    chipBtn(box,deckName(k)+" · "+n,fcPlay.has(k),deckColor(k),()=>{if(fcPlay.has(k))fcPlay.delete(k);else fcPlay.add(k);renderFlashcards();});});
+  const pool=fcPool(vis),today=dayKey(Date.now()),due=pool.filter(c=>fcDueOn(c.id,today)).length;
+  $("fcPlayInfo").textContent=pool.length?pool.length+" tarjetas · "+due+" pendientes hoy":"No hay tarjetas todavía. Crea una con + Tarjeta o sube apuntes a GitHub para que se generen.";
+  $("fcShort").disabled=!pool.length;$("fcDue").disabled=!due;
+  $("fcPlayPanel").hidden=!!fcGame;
+}
+function renderFcDecks(all,decks){
+  const box=$("fcDeckChips");box.textContent="";
+  const cnt=k=>all.filter(c=>(k==="*"||c.deck===k)&&(fcShowHidden||!(c.claude&&fc.hidden[c.id]))).length;
+  chipBtn(box,"Todas · "+cnt("*"),fcDeck==="*",null,()=>{fcDeck="*";fcLimit=40;renderFlashcards();});
+  decks.forEach(k=>chipBtn(box,deckName(k)+" · "+cnt(k),fcDeck===k,deckColor(k),()=>{fcDeck=k;fcLimit=40;renderFlashcards();}));
+}
+function boxesEl(n){const s=document.createElement("span");s.className="boxes";s.setAttribute("aria-label","Caja "+n+" de 5");for(let i=1;i<=5;i++){const b=document.createElement("span");if(i<=n)b.className="on";s.append(b);}return s;}
+function renderFcList(all){
+  const box=$("fcList");box.textContent="";const q=norm(fcQ);
+  const L=all.filter(c=>(fcDeck==="*"||c.deck===fcDeck)&&(fcShowHidden||!(c.claude&&fc.hidden[c.id]))&&(!q||norm(c.front+" "+c.back+" "+c.source).includes(q)))
+    .sort((a,b)=>(a.claude===b.claude?0:a.claude?1:-1)||(b.created||0)-(a.created||0));
+  if(!L.length){const p=document.createElement("div");p.className="empty";p.textContent=all.length&&fcQ?"Ninguna tarjeta coincide con la búsqueda.":"No hay tarjetas en este mazo.";box.append(p);return;}
+  L.slice(0,fcLimit).forEach(c=>{
+    const off=c.claude&&fc.hidden[c.id];
+    const r=document.createElement("div");r.className="fcrow"+(off?" off":"");
+    const bar=document.createElement("span");bar.className="bar4";bar.style.background=deckColor(c.deck);
+    const body=document.createElement("div");body.style.minWidth="0";
+    const f=document.createElement("div");f.className="f";f.textContent=c.front;
+    const b=document.createElement("div");b.className="b";b.textContent=c.back;
+    const m=document.createElement("div");m.className="m";m.append(boxesEl(fcBox(c.id)));
+    m.append(document.createTextNode((c.claude?"Claude"+(c.source?" · "+c.source.split("/").pop():""):"Propia")+(fcDeck==="*"?" · "+deckName(c.deck):"")+(off?" · oculta":"")));
+    const acts=document.createElement("div");acts.className="actions";
+    const btn=document.createElement("button");btn.type="button";btn.className="btn ghost sm";
+    if(c.claude){btn.textContent=off?"Mostrar":"Ocultar";btn.addEventListener("click",()=>{if(off)delete fc.hidden[c.id];else fc.hidden[c.id]=1;fcSave();renderFlashcards();});}
+    else{btn.textContent="Editar";btn.setAttribute("aria-label","Editar tarjeta");btn.addEventListener("click",()=>openFcForm(c));}
+    acts.append(btn);body.append(f,b,m,acts);r.append(bar,body);box.append(r);
+  });
+  if(L.length>fcLimit){const more=document.createElement("button");more.type="button";more.className="btn ghost sm";more.textContent="Ver más ("+(L.length-fcLimit)+")";
+    more.addEventListener("click",()=>{fcLimit+=40;renderFlashcards();});box.append(more);}
+}
+function renderFcStats(vis,decks){
+  const box=$("fcStats");box.textContent="";let any=false;
+  decks.forEach(k=>{const cs=vis.filter(c=>c.deck===k);if(!cs.length)return;any=true;
+    const dom=cs.filter(c=>fcBox(c.id)===5).length,seen=cs.filter(c=>fc.prog[c.id]).length;
+    const r=document.createElement("div");r.className="trow";
+    const top=document.createElement("div");top.className="top";const n=document.createElement("div");n.className="n";const i=document.createElement("i");i.style.background=deckColor(k);n.append(i,document.createTextNode(deckName(k)));top.append(n);
+    const bar=document.createElement("div");bar.className="bar";const f=document.createElement("div");f.style.background=deckColor(k);f.style.width=(dom/cs.length*100)+"%";bar.append(f);
+    const nums=document.createElement("div");nums.className="nums";
+    const s1=document.createElement("span");s1.append("Dominadas ");const b1=document.createElement("b");b1.textContent=dom+"/"+cs.length;s1.append(b1);
+    const s2=document.createElement("span");s2.textContent=(seen-dom)+" en repaso · "+(cs.length-seen)+" nuevas";
+    nums.append(s1,s2);r.append(top,bar,nums);box.append(r);});
+  if(!any){const p=document.createElement("div");p.className="empty";p.textContent="Aún no hay tarjetas.";box.append(p);}
+  const t=$("fcTotals");t.textContent="";const today=dayKey(Date.now());
+  [["Puntos",fc.stats.points||0],["Mejor racha",fc.stats.best||0],["Repasadas hoy",fc.stats.day===today?fc.stats.today||0:0]].forEach(([l,v])=>{const s=document.createElement("span");s.append(l+" ");const b=document.createElement("b");b.textContent=v;s.append(b);t.append(s);});
+}
+function renderFcRemote(){
+  const n=fc.remote&&fc.remote.cards?fc.remote.cards.length:0;
+  const when=fc.remote&&fc.remote.updated?(()=>{const d=new Date(fc.remote.updated);return isNaN(d)?"":" Actualizadas el "+d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear()+".";})():"";
+  $("fcRemoteSt").textContent=fcRemoteSt==="loading"?"Cargando…":fcRemoteSt==="err"?"No se han podido descargar (hace falta conexión la primera vez).":
+    (n?n+" tarjetas generadas."+when:"Todavía no hay tarjetas generadas.")+(fcRemoteSt==="cache"?" Sin conexión: se usa la última copia descargada.":"");
+}
+/* ---- juego ---- */
+function fcStart(kind){
+  const vis=fcVisible(),pool=fcPool(vis),today=dayKey(Date.now());
+  const due=shuffle(pool.filter(c=>fcDueOn(c.id,today))).sort((a,b)=>fcBox(a.id)-fcBox(b.id));
+  let q;
+  if(kind==="due")q=due;
+  else{q=due.slice(0,10);if(q.length<10){const rest=shuffle(pool.filter(c=>!fcDueOn(c.id,today))).sort((a,b)=>(fc.prog[a.id].next||"").localeCompare(fc.prog[b.id].next||""));q=q.concat(rest.slice(0,10-q.length));}}
+  if(!q.length){$("fcPlayErr").textContent="No hay tarjetas pendientes hoy. Usa la sesión corta para repasar igualmente.";$("fcPlayErr").hidden=false;return;}
+  $("fcPlayErr").hidden=true;
+  fcGame={ids:q.map(c=>c.id),i:0,shown:false,ok:0,ko:0,streak:0,best:0,pts:0,gain:"",done:false};
+  renderFlashcards();$("fcGamePanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function fcAnswer(knew){
+  const g=fcGame;if(!g||!g.shown||g.done)return;
+  const id=g.ids[g.i],today=dayKey(Date.now()),p=fc.prog[id]||{box:1,ok:0,ko:0};
+  if(knew){p.box=Math.min(5,(p.box||1)+1);p.ok=(p.ok||0)+1;g.ok++;g.streak++;g.best=Math.max(g.best,g.streak);
+    const pts=10+5*Math.min(g.streak-1,4);g.pts+=pts;fc.stats.points=(fc.stats.points||0)+pts;g.gain="+"+pts+(g.streak>1?" · racha de "+g.streak:"");}
+  else{p.box=1;p.ko=(p.ko||0)+1;g.ko++;g.streak=0;g.gain="Vuelve a la caja 1";}
+  p.last=today;p.next=addDays(today,FC_GAP[p.box]);fc.prog[id]=p;
+  fc.stats.best=Math.max(fc.stats.best||0,g.best);
+  if(fc.stats.day!==today){fc.stats.day=today;fc.stats.today=0;}fc.stats.today++;
+  fcSave();
+  g.i++;g.shown=false;if(g.i>=g.ids.length)g.done=true;
+  renderFlashcards();
+}
+function renderFcGame(){
+  const g=fcGame;$("fcGamePanel").hidden=!g;if(!g)return;
+  const st=$("fcStage");st.textContent="";
+  $("fcPos").textContent=Math.min(g.i+1,g.ids.length)+"/"+g.ids.length;$("fcStreak").textContent=g.streak;$("fcPts").textContent=g.pts;
+  $("fcGain").textContent=g.done?"":g.gain;$("fcQuit").hidden=g.done;
+  if(g.done){
+    const e=document.createElement("div");e.className="fcend";
+    const h=document.createElement("div");h.className="fbhead";h.textContent="Sesión terminada";e.append(h);
+    [["Aciertos",g.ok+" de "+(g.ok+g.ko)],["Puntos",g.pts],["Mejor racha",g.best]].forEach(([l,v])=>{const d=document.createElement("div");d.append(l+": ");const b=document.createElement("b");b.textContent=v;d.append(b);e.append(d);});
+    const a=document.createElement("div");a.className="actions";
+    const again=document.createElement("button");again.type="button";again.className="btn primary";again.textContent="Otra sesión corta";again.addEventListener("click",()=>{fcGame=null;fcStart("short");});
+    const out=document.createElement("button");out.type="button";out.className="btn ghost";out.textContent="Salir";out.addEventListener("click",()=>{fcGame=null;renderFlashcards();});
+    a.append(again,out);e.append(a);st.append(e);$("fcPos").textContent=g.ids.length+"/"+g.ids.length;return;
+  }
+  const c=fcAll().find(x=>x.id===g.ids[g.i]);
+  if(!c){g.ids.splice(g.i,1);if(g.i>=g.ids.length)g.done=true;return renderFcGame();}
+  const card=document.createElement(g.shown?"div":"button");card.className="fcard";if(!g.shown){card.type="button";card.setAttribute("aria-label","Ver respuesta");}
+  const sub=document.createElement("div");sub.className="sub";const i=document.createElement("i");i.style.background=deckColor(c.deck);
+  sub.append(i,document.createTextNode(deckName(c.deck)+" · caja "+fcBox(c.id)));
+  const q=document.createElement("div");q.className="q";q.textContent=c.front;card.append(sub,q);
+  if(g.shown){const a=document.createElement("div");a.className="a";a.textContent=c.back;card.append(a);card.style.cursor="default";}
+  else{const h=document.createElement("div");h.className="hint";h.textContent="Toca para ver la respuesta";card.append(h);
+    card.addEventListener("click",()=>{g.shown=true;g.gain="";renderFcGame();const k=$("fcKnew");if(k)k.focus();});}
+  st.append(card);
+  if(g.shown){const ans=document.createElement("div");ans.className="fcans";
+    const ko=document.createElement("button");ko.type="button";ko.className="btn";ko.textContent="No la sabía";ko.addEventListener("click",()=>fcAnswer(false));
+    const ok=document.createElement("button");ok.type="button";ok.className="btn primary";ok.id="fcKnew";ok.textContent="La sabía";ok.addEventListener("click",()=>fcAnswer(true));
+    ans.append(ko,ok);st.append(ans);}
+}
+$("fcShort").addEventListener("click",()=>fcStart("short"));
+$("fcDue").addEventListener("click",()=>fcStart("due"));
+$("fcQuit").addEventListener("click",()=>{if(fcGame){fcGame.done=true;renderFlashcards();}});
+$("fcQ").addEventListener("input",e=>{fcQ=e.target.value;fcLimit=40;renderFcList(fcAll());});
+$("fcShowHidden").addEventListener("change",e=>{fcShowHidden=e.target.checked;renderFlashcards();});
+/* ---- tarjetas propias ---- */
+function openFcForm(c){
+  fcEdit=c?c.id:null;$("fcFormPanel").hidden=false;$("fcFormTitle").textContent=c?"Editar tarjeta":"Nueva tarjeta";
+  const cur=c?c.deck:(fcDeck!=="*"&&!fcDeck.startsWith("n:")?fcDeck:null);
+  fillSubjSelect($("fSubj"),false,cur&&!cur.startsWith("n:")?cur:null);
+  $("fFront").value=c?c.front:"";$("fBack").value=c?c.back:"";$("fErr").hidden=true;
+  $("fDelete").hidden=!c;$("fDelete").textContent="Borrar";
+  $("fcFormPanel").scrollIntoView({behavior:"smooth",block:"start"});$("fFront").focus({preventScroll:true});
+}
+function closeFcForm(){$("fcFormPanel").hidden=true;fcEdit=null;}
+$("fcAdd").addEventListener("click",()=>openFcForm(null));
+$("fCancel").addEventListener("click",closeFcForm);
+armButton($("fDelete"),"Borrar",()=>"¿Seguro? Pulsa otra vez",()=>{
+  if(!fcEdit)return closeFcForm();
+  fc.own=fc.own.filter(x=>x.id!==fcEdit);delete fc.prog[fcEdit];fcSave();closeFcForm();renderFlashcards();setSync("Tarjeta borrada");
+});
+$("fcForm").addEventListener("submit",e=>{
+  e.preventDefault();const err=t=>{$("fErr").textContent=t;$("fErr").hidden=false;};
+  const subject=$("fSubj").value,front=$("fFront").value.replace(/\s+$/,""),back=$("fBack").value.replace(/\s+$/,"");
+  if(!subject)return err("Crea primero una asignatura en el registro de horas.");
+  if(!front.trim()||!back.trim())return err("Rellena el anverso y el reverso.");
+  const old=fcEdit&&fc.own.find(x=>x.id===fcEdit);
+  const c={id:old?old.id:"u-"+uid(),subject,front,back,created:old?old.created:Date.now()};
+  const prev=fc.own;fc.own=old?fc.own.map(x=>x.id===c.id?c:x):[...fc.own,c];
+  if(!fcSave()){fc.own=prev;return err("No se pudo guardar: el almacenamiento del navegador está lleno.");}
+  fcDeck=subject;closeFcForm();renderFlashcards();setSync("Tarjeta guardada");
+});
+document.addEventListener("keydown",e=>{
+  if(curPage!=="flashcards"||!fcGame||fcGame.done||e.target.closest("input,textarea,select"))return;
+  if(!fcGame.shown&&(e.key===" "||e.key==="Enter")&&!e.target.closest("button")){e.preventDefault();fcGame.shown=true;renderFcGame();}
+  else if(fcGame.shown&&(e.key==="1"||e.key==="ArrowLeft"))fcAnswer(false);
+  else if(fcGame.shown&&(e.key==="2"||e.key==="ArrowRight"))fcAnswer(true);
+});
+
 /* ---------- menú de secciones ---------- */
 const PAGES={
   registro:{t:"Registro de horas",ready:true},
   agenda:{t:"Agenda y recordatorios",ready:true},
   horario:{t:"Horario semanal",ready:true},
   recursos:{t:"Recursos por asignatura",ready:true},
-  flashcards:{t:"Flashcards",soon:"Tarjetas de repaso que mezclan todas las asignaturas, en modo juego, para los ratos muertos."}
+  flashcards:{t:"Flashcards",ready:true}
 };
 document.querySelectorAll("#menu a").forEach(a=>{if(!PAGES[a.dataset.page].ready){const t=document.createElement("span");t.className="tag";t.textContent="Próximamente";a.append(t);}});
 function openMenu(o){$("menu").hidden=!o;$("menuBtn").setAttribute("aria-expanded",String(o));if(o)$("menu").querySelector('[aria-current="page"]')?.focus();}
@@ -1837,11 +2135,13 @@ function route(){
   $("page-agenda").hidden=pg!=="agenda";
   $("page-horario").hidden=pg!=="horario";
   $("page-recursos").hidden=pg!=="recursos";
+  $("page-flashcards").hidden=pg!=="flashcards";
   $("soon").hidden=!!info.ready;
   if(!info.ready){$("soonTitle").textContent=info.t+" · próximamente";$("soonText").textContent=info.soon;}
   if(pg==="agenda")renderAgenda();
   if(pg==="horario")renderHorario();
   if(pg==="recursos"){renderRecursos();if(gh.st!=="ok")loadIndice();}
+  if(pg==="flashcards")renderFlashcards();
   if(pg==="registro")tick();else document.title=info.t;
   openMenu(false);window.scrollTo(0,0);
 }
@@ -1851,6 +2151,7 @@ route();
 render();
 init();
 renderAlerts();
+loadFlashcards();
 setTimeout(checkReminders,400);
 setInterval(checkReminders,30000);
 setInterval(()=>{if(curPage==="horario"&&document.visibilityState==="visible")renderHorario();},60000);

@@ -6,7 +6,7 @@ Una fase por día. Cada fase marcada `[x]` ya está publicada. La siguiente a im
 - [x] Fase 1 — Agenda y recordatorios, descansos, aprovechamiento y gráficas mes/cuatrimestre (20 oct 2026)
 - [x] Fase 2 — Horario semanal (20 oct 2026)
 - [x] Fase 3 — Recursos por asignatura (20 oct 2026)
-- [ ] Fase 4 — Flashcards
+- [x] Fase 4 — Flashcards (21 oct 2026)
 
 ## Especificación de cada fase
 
