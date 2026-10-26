@@ -16,11 +16,21 @@ Esta carpeta es la app completa. Para instalarla en el móvil hay que subirla a 
 2. Toca el menú **⋮ → Añadir a pantalla de inicio → Instalar**.
 3. Aparece el icono *Estudio*. Se abre a pantalla completa y funciona sin conexión.
 
-## Datos
+## Datos y sincronización
 
-- Se guardan solo en ese teléfono, no en la nube.
-- Usa **Exportar copia** de vez en cuando y guarda el `.json` en Drive. Con **Importar copia** lo recuperas en otro móvil o si borras datos.
-- No borres los datos de Chrome para ese sitio, o perderás el historial que no hayas exportado.
+- Los datos se guardan en el navegador (la app funciona sin conexión) y, con la cuenta configurada, se sincronizan con Supabase: mismos datos en móvil, PC, tablet…
+- Entrar: usuario `enrique` (equivale a `enrique@horas-estudio.app`) y la contraseña de ese usuario en Supabase.
+- Si dos dispositivos cambian cosas a la vez (p. ej. uno sin red), se fusionan por elemento: no se pierden sesiones; un borrado hecho solo en uno puede reaparecer.
+- Los **archivos** de Recursos (PDF, imágenes) no se suben: quedan en el dispositivo donde se añadieron. Enlaces y notas sí se sincronizan.
+- **Exportar copia** sigue disponible como respaldo.
+
+### Configurar la nube (una vez)
+
+1. Crea un proyecto gratis en supabase.com.
+2. **SQL Editor** → pega `supabase.sql` → **Run**.
+3. **Authentication → Users → Add user → Create new user**: email `enrique@horas-estudio.app`, la contraseña, y marca **Auto Confirm User**.
+4. **Authentication → Sign In / Providers**: desactiva **Allow new users to sign up**.
+5. **Project Settings → API Keys**: copia la *Project URL* y la clave *publishable* (o *anon*) y ponlas en `SB_URL` y `SB_KEY` dentro de `index.html`. Esa clave es pública por diseño; los datos los protegen el usuario y las políticas de `supabase.sql`.
 
 ## Actualizar la app
 

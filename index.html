@@ -399,7 +399,27 @@ a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
 .boxes span.on{background:var(--accent);border-color:var(--accent)}
 .fcform textarea{min-height:5em}
 #fcStats{display:grid;gap:14px}
+/* Acceso y sincronización */
+body.locked .wrap{display:none}
+.login{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 16px}
+.login form{width:100%;max-width:340px}
+.login h1{font-family:var(--f-display);font-size:1.6rem;margin:0}
+.login label{display:grid;gap:4px;font-size:.85rem;font-weight:500}
+.login input{width:100%;background:var(--field-bg);color:var(--field-ink);padding:10px 12px}
+.login .btn.primary{width:100%}
+.login .err{color:var(--danger);font-size:.85rem;margin:0;min-height:1.3em}
 </style>
+
+<div class="login" id="login" hidden>
+  <form class="panel" id="loginForm" novalidate>
+    <h1>Horas de Estudio</h1>
+    <p class="note" style="margin:0">Entra para usar tus datos en cualquier dispositivo.</p>
+    <label>Usuario<input id="lgUser" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
+    <label>Contraseña<input id="lgPass" name="password" type="password" autocomplete="current-password"></label>
+    <button class="btn primary" type="submit" id="lgBtn">Entrar</button>
+    <p class="err" id="lgErr" role="alert"></p>
+  </form>
+</div>
 
 <div class="wrap">
   <header>
@@ -523,9 +543,14 @@ a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
       </section>
 
 
-      <section class="panel" aria-label="Copia de seguridad">
-        <h2>Copia de seguridad</h2>
-        <p class="note">Tus datos se guardan solo en este móvil. Si borras los datos del navegador o cambias de teléfono, se pierden, así que exporta una copia de vez en cuando.</p>
+      <section class="panel" aria-label="Cuenta y copia de seguridad">
+        <h2>Cuenta y copia de seguridad</h2>
+        <div class="backup" id="cloudBox" hidden>
+          <span class="note" id="cloudMsg" style="flex:1 1 100%"></span>
+          <button class="btn" type="button" id="cloudNow">Sincronizar ahora</button>
+          <button class="btn ghost" type="button" id="cloudOut">Cerrar sesión</button>
+        </div>
+        <p class="note" id="cloudNote">Tus datos se guardan solo en este navegador. Si borras los datos del navegador o cambias de teléfono, se pierden, así que exporta una copia de vez en cuando.</p>
         <div class="backup">
           <button class="btn" type="button" id="exportBtn">Exportar copia</button>
           <label class="btn ghost" for="importFile" style="cursor:pointer">Importar copia</label>
@@ -787,7 +812,7 @@ function pausesTxt(n){return n===1?"1 pausa":n+" pausas";}
 
 /* ---------- persistencia ---------- */
 function lsLoad(){try{const raw=localStorage.getItem(LSKEY);if(raw){const d=JSON.parse(raw);if(d&&d.config)state=d;}}catch(e){}}
-function lsSave(){try{localStorage.setItem(LSKEY,JSON.stringify(state));}catch(e){}}
+function lsSave(){try{localStorage.setItem(LSKEY,JSON.stringify(state));}catch(e){}cloudDirty();}
 function queue(fn){writing=writing.then(fn).catch(e=>{console.error(e);setSync("No se pudo guardar el último cambio. Revisa la conexión.");});return writing;}
 function setSync(t){$("sync").textContent=t;}
 
@@ -1373,7 +1398,7 @@ function armButton(btn,label,armedLabel,fn){
 const AKEY="he-agenda-v1";
 let ag={events:[],fired:{},alerts:[]};
 function agLoad(){try{const d=JSON.parse(localStorage.getItem(AKEY)||"null");if(d&&Array.isArray(d.events))ag={events:d.events,fired:d.fired||{},alerts:Array.isArray(d.alerts)?d.alerts:[]};}catch(e){}}
-function agSave(){try{localStorage.setItem(AKEY,JSON.stringify(ag));}catch(e){}}
+function agSave(){try{localStorage.setItem(AKEY,JSON.stringify(ag));}catch(e){}cloudDirty();}
 agLoad();
 const TYPE_COLOR={Clase:"var(--s1)",Examen:"var(--danger)",Entrega:"var(--s3)",Tarea:"var(--s5)",Otro:"var(--muted)"};
 const REMIND_TXT={0:"al momento",10:"10 min antes",60:"1 h antes",1440:"1 día antes"};
@@ -1551,7 +1576,7 @@ function renderAlerts(){
 const HKEY="he-horario-v1";
 let hz={blocks:[]};
 function hzLoad(){try{const d=JSON.parse(localStorage.getItem(HKEY)||"null");if(d&&Array.isArray(d.blocks))hz={blocks:d.blocks};}catch(e){}}
-function hzSave(){try{localStorage.setItem(HKEY,JSON.stringify(hz));}catch(e){}}
+function hzSave(){try{localStorage.setItem(HKEY,JSON.stringify(hz));}catch(e){}cloudDirty();}
 hzLoad();
 const H0=7*60,H1=22*60,SLOT=30,ROWH=22,COLH=(H1-H0)/SLOT*ROWH;
 const mqMobile=window.matchMedia("(max-width:700px)");
@@ -1710,7 +1735,7 @@ const RTAGS=["Apuntes","Boletín","Examen anterior","Vídeo","Otro"];
 const GH_TREE="https://github.com/Enrique2329/horas-estudio/tree/main/recursos";
 let rc={items:[]};
 function rcLoad(){try{const d=JSON.parse(localStorage.getItem(RKEY)||"null");if(d&&Array.isArray(d.items))rc={items:d.items};}catch(e){}}
-function rcSave(){try{localStorage.setItem(RKEY,JSON.stringify(rc));return true;}catch(e){return false;}}
+function rcSave(){try{localStorage.setItem(RKEY,JSON.stringify(rc));cloudDirty();return true;}catch(e){return false;}}
 rcLoad();
 /* Archivos en IndexedDB: clave = id del recurso, valor = {type,name,buf:ArrayBuffer} */
 let rdbP=null;
@@ -1914,7 +1939,7 @@ function fcSet(d,keepRemote){
   fc={own:Array.isArray(d.own)?d.own.filter(c=>c&&c.id):[],prog:d.prog&&typeof d.prog==="object"?d.prog:{},hidden:d.hidden&&typeof d.hidden==="object"?d.hidden:{},
     stats:Object.assign({points:0,best:0,day:"",today:0},d.stats||{}),remote:keepRemote?(d.remote||null):fc.remote};
 }
-function fcSave(){try{localStorage.setItem(FKEY,JSON.stringify(fc));return true;}catch(e){return false;}}
+function fcSave(){try{localStorage.setItem(FKEY,JSON.stringify(fc));cloudDirty();return true;}catch(e){return false;}}
 fcLoad();
 let fcRemoteSt=fc.remote?"cache":"loading";
 function validRemote(j){return j&&Array.isArray(j.cards)?j.cards.filter(c=>c&&typeof c.id==="string"&&typeof c.front==="string"&&typeof c.back==="string"):null;}
@@ -2113,6 +2138,195 @@ document.addEventListener("keydown",e=>{
   else if(fcGame.shown&&(e.key==="2"||e.key==="ArrowRight"))fcAnswer(true);
 });
 
+/* ---------- Cuenta y sincronización en la nube (Supabase) ----------
+   Una fila por usuario en la tabla app_state: {user_id, data (jsonb), rev, updated_at}.
+   Los datos siguen guardándose en el navegador (la app funciona sin conexión) y se suben/bajan cuando hay red.
+   `rev` sube en 1 con cada escritura: si otro dispositivo escribió antes, la subida falla y se fusiona por id.
+   Los archivos de Recursos (PDF, imágenes) NO se suben: se quedan en el dispositivo donde se añadieron. */
+var SB_URL="";                      // p. ej. "https://abcdefgh.supabase.co"
+var SB_KEY="";                      // clave "publishable" (o "anon") del proyecto: es pública por diseño
+var SB_DOMAIN="horas-estudio.app";  // el usuario "enrique" entra como enrique@horas-estudio.app
+var CK_AUTH="he-auth-v1",CK_META="he-sync-v1";
+var cloudOn=!!(SB_URL&&SB_KEY),cloudApplying=false,cloudTimer=null,cloudBusy=null,cloudAgain=false;
+function cmeta(){let m=null;try{m=JSON.parse(localStorage.getItem(CK_META)||"null");}catch(e){}return Object.assign({rev:0,dirty:false,hash:""},m||{});}
+function cmetaSet(p){const m=Object.assign(cmeta(),p);try{localStorage.setItem(CK_META,JSON.stringify(m));}catch(e){}return m;}
+function cAuth(){try{return JSON.parse(localStorage.getItem(CK_AUTH)||"null");}catch(e){return null;}}
+function cAuthSet(a){try{if(a)localStorage.setItem(CK_AUTH,JSON.stringify(a));else localStorage.removeItem(CK_AUTH);}catch(e){}}
+function cHash(str){let h=5381;for(let i=0;i<str.length;i++)h=(h*33+str.charCodeAt(i))|0;return (h>>>0).toString(36)+":"+str.length;}
+function cloudDirty(){
+  if(!cloudOn||cloudApplying)return;
+  cmetaSet({dirty:true});
+  if(!cAuth())return;
+  clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudSync,2000);
+}
+function cloudShow(t,head){const el=$("cloudMsg");if(el)el.textContent=t;if(head)setSync(t);}
+function hhmm(){const d=new Date();return pad(d.getHours())+":"+pad(d.getMinutes());}
+
+/* --- datos que viajan --- */
+function cloudPack(){
+  return {v:1,state,agenda:{events:ag.events,fired:ag.fired},horario:{blocks:hz.blocks},recursos:{items:rc.items},
+    flashcards:{own:fc.own,prog:fc.prog,hidden:fc.hidden,stats:fc.stats}};
+}
+function cloudHasContent(p){
+  return !!(p.state.sessions.length||p.agenda.events.length||p.horario.blocks.length||p.recursos.items.length||p.flashcards.own.length);
+}
+function cloudValid(d){return d&&d.state&&d.state.config&&Array.isArray(d.state.sessions);}
+function cloudApply(d){
+  const fcBefore=JSON.stringify(cloudPack().flashcards);
+  cloudApplying=true;
+  try{
+    state=d.state;lsSave();
+    const a=d.agenda||{};ag={events:Array.isArray(a.events)?a.events:[],fired:a.fired||{},alerts:ag.alerts||[]};agSave();
+    hz={blocks:d.horario&&Array.isArray(d.horario.blocks)?d.horario.blocks:[]};hzSave();
+    rc={items:d.recursos&&Array.isArray(d.recursos.items)?d.recursos.items:[]};rcSave();
+    fcSet(d.flashcards||{},false);fcSave();
+  }finally{cloudApplying=false;}
+  if(JSON.stringify(cloudPack().flashcards)!==fcBefore)fcGame=null;
+  render();renderAlerts();
+  if(curPage==="agenda")renderAgenda();
+  if(curPage==="horario")renderHorario();
+  if(curPage==="recursos")renderRecursos();
+  if(curPage==="flashcards")renderFlashcards();
+}
+/* Fusión por id: une las dos versiones; si un elemento existe en ambas, gana `mine` (este dispositivo).
+   Un borrado hecho en un solo lado puede reaparecer: es el precio de no perder nunca una sesión. */
+function cById(mine,other){const m=new Map();for(const x of other||[])if(x&&x.id)m.set(x.id,x);for(const x of mine||[])if(x&&x.id)m.set(x.id,x);return [...m.values()];}
+function cloudMerge(mine,other){
+  const cfg=Object.assign({},other.state.config,mine.state.config);
+  cfg.subjects=cById(mine.state.config.subjects,other.state.config.subjects);
+  if(!mine.state.config.active&&other.state.config.active)cfg.active=other.state.config.active;
+  const fm=mine.flashcards,fo=other.flashcards||{};
+  const so=fo.stats||{},sm=fm.stats||{};
+  return {v:1,
+    state:{...other.state,...mine.state,config:cfg,sessions:cById(mine.state.sessions,other.state.sessions).sort((a,b)=>a.start-b.start)},
+    agenda:{events:cById(mine.agenda.events,(other.agenda||{}).events),fired:Object.assign({},(other.agenda||{}).fired,mine.agenda.fired)},
+    horario:{blocks:cById(mine.horario.blocks,(other.horario||{}).blocks)},
+    recursos:{items:cById(mine.recursos.items,(other.recursos||{}).items)},
+    flashcards:{own:cById(fm.own,fo.own),prog:Object.assign({},fo.prog,fm.prog),hidden:Object.assign({},fo.hidden,fm.hidden),
+      stats:Object.assign({},so,sm,{points:Math.max(so.points||0,sm.points||0),best:Math.max(so.best||0,sm.best||0)})}};
+}
+
+/* --- API de Supabase (auth + REST) sin librerías --- */
+function cErr(msg,status){const e=new Error(msg);e.status=status;return e;}
+async function sbAuth(grant,body){
+  const r=await fetch(SB_URL+"/auth/v1/token?grant_type="+grant,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw cErr(j.error_description||j.msg||j.message||("HTTP "+r.status),r.status);
+  const a={access:j.access_token,refresh:j.refresh_token,exp:j.expires_at?j.expires_at*1000:Date.now()+(j.expires_in||3600)*1000,uid:j.user&&j.user.id};
+  cAuthSet(a);return a;
+}
+async function sbToken(force){
+  let a=cAuth();if(!a)throw cErr("sin sesión",401);
+  if(force||Date.now()>a.exp-60000){
+    try{a=await sbAuth("refresh_token",{refresh_token:a.refresh});}
+    catch(e){if(e.status>=400&&e.status<500)cloudLogout("La sesión ha caducado. Vuelve a entrar.");throw e;}
+  }
+  return a;
+}
+async function sbRest(path,opt,retried){
+  const a=await sbToken(retried);
+  const r=await fetch(SB_URL+"/rest/v1/"+path,Object.assign({},opt,{headers:Object.assign({apikey:SB_KEY,Authorization:"Bearer "+a.access,
+    "Content-Type":"application/json",Prefer:"return=representation"},(opt||{}).headers)}));
+  if(r.status===401&&!retried)return sbRest(path,opt,true);
+  const j=await r.json().catch(()=>null);
+  if(!r.ok)throw cErr((j&&(j.message||j.hint))||("HTTP "+r.status),r.status);
+  return j;
+}
+
+/* --- sincronización --- */
+function cloudSync(){
+  clearTimeout(cloudTimer);
+  if(cloudBusy){cloudAgain=true;return cloudBusy;}
+  cloudBusy=cloudSyncNow().catch(e=>{
+    console.error(e);
+    if(e&&e.status)cloudShow("No se pudo sincronizar ("+e.message+"). Los cambios siguen en este dispositivo.");
+    else cloudShow("Sin conexión. Los cambios se subirán cuando vuelva la red.");
+  }).finally(()=>{cloudBusy=null;if(cloudAgain){cloudAgain=false;cloudSync();}});
+  return cloudBusy;
+}
+async function cloudSyncNow(){
+  if(!cloudOn||!cAuth())return;
+  if(navigator.onLine===false){cloudShow("Sin conexión. Los cambios se subirán cuando vuelva la red.");return;}
+  for(let tries=0;tries<3;tries++){
+    const a=await sbToken();
+    const rows=await sbRest("app_state?select=data,rev,updated_at&user_id=eq."+a.uid,{method:"GET"});
+    const row=rows&&rows[0];
+    const m=cmeta();
+    let local=cloudPack();
+    if(!row){ // primera vez en la nube: se sube lo de este dispositivo
+      const body=JSON.stringify(local);
+      await sbRest("app_state",{method:"POST",body:JSON.stringify({user_id:a.uid,data:local,rev:1,updated_at:new Date().toISOString()})});
+      cmetaSet({rev:1,dirty:false,hash:cHash(body)});
+      cloudShow("Sincronizado · "+hhmm());return;
+    }
+    if(!cloudValid(row.data))throw cErr("datos de la nube no válidos",500);
+    let toPush=null;
+    if(m.rev===0){ // primer acceso desde este dispositivo
+      if(cloudHasContent(local)){toPush=cloudMerge(local,row.data);cloudApply(toPush);}
+      else{cloudApply(row.data);cmetaSet({rev:row.rev,dirty:false,hash:cHash(JSON.stringify(cloudPack()))});cloudShow("Sincronizado · "+hhmm(),true);return;}
+    }else if(row.rev!==m.rev){ // otro dispositivo ha guardado cambios
+      if(m.dirty){toPush=cloudMerge(local,row.data);cloudApply(toPush);}
+      else{cloudApply(row.data);cmetaSet({rev:row.rev,dirty:false,hash:cHash(JSON.stringify(cloudPack()))});cloudShow("Sincronizado · "+hhmm());return;}
+    }else{ // la nube no ha cambiado: subir solo si aquí hay algo nuevo
+      const body=JSON.stringify(local);
+      if(cHash(body)===m.hash){cmetaSet({dirty:false});cloudShow("Sincronizado · "+hhmm());return;}
+      toPush=local;
+    }
+    const body=JSON.stringify(toPush);
+    const out=await sbRest("app_state?user_id=eq."+a.uid+"&rev=eq."+row.rev,{method:"PATCH",body:JSON.stringify({data:toPush,rev:row.rev+1,updated_at:new Date().toISOString()})});
+    if(Array.isArray(out)&&out.length){cmetaSet({rev:row.rev+1,dirty:false,hash:cHash(body)});cloudShow("Sincronizado · "+hhmm());return;}
+    cmetaSet({rev:row.rev,dirty:true}); // alguien escribió entre medias: repetir con la versión nueva
+  }
+  throw cErr("conflicto repetido, se reintentará",409);
+}
+
+/* --- acceso --- */
+function cloudGate(){
+  const locked=cloudOn&&!cAuth();
+  document.body.classList.toggle("locked",locked);
+  $("login").hidden=!locked;
+  $("cloudBox").hidden=!cloudOn||locked;
+  $("cloudNote").textContent=cloudOn
+    ?"Los datos se guardan en este dispositivo y se sincronizan con tu cuenta. Los archivos de Recursos (PDF, imágenes) no se suben: quedan solo en el dispositivo donde los añadiste."
+    :"Tus datos se guardan solo en este navegador. Si borras los datos del navegador o cambias de teléfono, se pierden, así que exporta una copia de vez en cuando.";
+  if(locked)setTimeout(()=>$("lgUser").focus(),50);
+}
+function cloudLogout(msg){
+  cAuthSet(null);cmetaSet({rev:0,dirty:false,hash:""});
+  cloudGate();$("lgErr").textContent=msg||"";
+}
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const u=$("lgUser").value.trim().toLowerCase(),pw=$("lgPass").value;
+  if(!u||!pw){$("lgErr").textContent="Escribe usuario y contraseña.";return;}
+  const btn=$("lgBtn");btn.disabled=true;$("lgErr").textContent="Entrando…";
+  try{
+    await sbAuth("password",{email:u.includes("@")?u:u+"@"+SB_DOMAIN,password:pw});
+    $("lgPass").value="";$("lgErr").textContent="";cloudGate();
+    cloudShow("Sincronizando…",true);cloudSync();
+  }catch(err){
+    $("lgErr").textContent=err&&err.status===400?"Usuario o contraseña incorrectos.":
+      err&&err.status===429?"Demasiados intentos. Espera unos minutos.":"No se pudo conectar. Revisa la conexión.";
+  }
+  btn.disabled=false;
+});
+$("cloudNow").addEventListener("click",()=>{cloudShow("Sincronizando…");cloudSync();});
+$("cloudOut").addEventListener("click",async()=>{
+  if(cmeta().dirty){cloudShow("Subiendo cambios antes de salir…");await cloudSync();}
+  if(cmeta().dirty&&!confirm("Hay cambios que aún no se han subido. Se quedan en este dispositivo y se subirán la próxima vez que entres. ¿Cerrar sesión igualmente?"))return;
+  const a=cAuth();
+  if(a)fetch(SB_URL+"/auth/v1/logout",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+a.access}}).catch(()=>{});
+  cloudLogout("");
+});
+function cloudStart(){
+  cloudGate();
+  if(!cloudOn)return;
+  if(cAuth()){cloudShow("Sincronizando…");cloudSync();}
+  window.addEventListener("online",()=>{if(cAuth())cloudSync();});
+  document.addEventListener("visibilitychange",()=>{if(cAuth())cloudSync();}); // al volver a la app trae cambios; al salir sube los pendientes
+  setInterval(()=>{if(cAuth()&&document.visibilityState==="visible")cloudSync();},60000);
+}
+
 /* ---------- menú de secciones ---------- */
 const PAGES={
   registro:{t:"Registro de horas",ready:true},
@@ -2152,6 +2366,7 @@ render();
 init();
 renderAlerts();
 loadFlashcards();
+cloudStart();
 setTimeout(checkReminders,400);
 setInterval(checkReminders,30000);
 setInterval(()=>{if(curPage==="horario"&&document.visibilityState==="visible")renderHorario();},60000);
